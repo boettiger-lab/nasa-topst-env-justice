@@ -1,2 +1,11 @@
 # nasa-topst-env-justice
 Examining Environmental Justice through Open Source, Cloud-Native Tools
+
+This is the development repository of educational training materials we are building as part of the [NASA TOPS-T](https://nspires.nasaprs.com/external/solicitations/summary.do?solId=%7BAB776446-03A8-4C24-845D-2E5A2ADA2D5A%7D&path=&method=init) program. A copy of the funded grant proposal to NASA describing this project can be found on Zenodo under [DOI:10.5281/zenodo.8240012](https://doi.org/10.5281/zenodo.8240012). This was one of [16 successfully funded proposals](https://nspires.nasaprs.com/external/viewrepositorydocument/cmdocumentid=929821/solicitationId=%7BAB776446-03A8-4C24-845D-2E5A2ADA2D5A%7D/viewSolicitationDocument=1/TOPST22%20selections.pdf) under the program.  
+
+ipython and quarto notbooks here are a work in progress, but comments/issues/suggestions welcome.
+
+
+## Abstract
+
+1968: In the same year as NASA’s first manned mission to the moon, racially segregated housing became illegal with the Fair Housing Act. The law would now ban practices known as redlining – in which the federal government’s Home Owners Loan Corporation dividing cities into areas graded ‘minimal risk’ to ‘hazardous’ for home loans based largely on racial and ethnic make-up (Nelson et al 2022). But the consequences of such practices are not easily reversed. More than 50 years later, scientists can still see the pattern of the inequalities etched onto those maps even from space (Schell et al, 2020). This educational module will seek to introduce students to the open source platforms and tools used to manipulate and analyze NASA’s open earth observation imagery through the lens of examining the environmental legacy of redlining practices in major urban areas. We will introduce key concepts of cloud-native geospatial workflows including STAC, COG, and GDAL Virtual Filesystem to allow students to leverage analysis against terrabytes of NASA data. The module design is also deeply rooted in pedagogical practices established by education research literature to increase engagement and reach an inclusive audience (Handelsman et al. 2004; Allen & Tanner 2005). The module will be provided in both R and Python and be made available in both English and Spanish translations.
