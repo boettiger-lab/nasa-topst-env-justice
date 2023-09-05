@@ -1,10 +1,12 @@
 library(rstac)
 library(gdalcubes)
 source('https://gist.github.com/cboettig/5401bd149a2a27bde2042aa4f7cde25b/raw/d360b381f6e16ae518532ef1777116f175c471b5/ed_set_token.R')
+
+# Set env vars EARTHDATA_USER and EARTHDATA_PASSWORD in your .Renviron or pass them manually to `ed_set_token()`
 header <- ed_set_token()
 gdalcubes_set_gdal_config("GDAL_HTTP_HEADERS", header)
 
-gdalcubes_options(parallel = parallel::detectCores()*10) 
+gdalcubes_options(parallel = TRUE) 
 
 # Set a search box in space & time
 bbox <- c(xmin=-122.5, ymin=37.5, xmax=-122.0, ymax=38) 
