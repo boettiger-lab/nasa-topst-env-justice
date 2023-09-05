@@ -20,6 +20,9 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/LPCLOUD") |>
   items_fetch() |>
   items_filter(filter_fn = \(x) {x[["eo:cloud_cover"]] < 20})
 
+# 23 different features match search
+length(items$features)
+
 # RGB bands + mask
 assets <- c("B02", "B03", "B04", "Fmask")
 col <- stac_image_collection(items$features, asset_names = assets)
