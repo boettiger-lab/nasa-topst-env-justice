@@ -1,7 +1,5 @@
-pystac
 geopandas
 stackstac
 pystac_client
-irkernel
 dask
 
