@@ -20,7 +20,7 @@
 		  },
 		  "extensions": [
 			"reditorsupport.r",
-			"rdebugger.r-debugger"
+			"rdebugger.r-debugger",
 			"ms-toolsai.jupyter",
 			"ms-python.python"			
 			]
