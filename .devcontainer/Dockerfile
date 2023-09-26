@@ -16,6 +16,6 @@ RUN <<-EOF
 EOF
 
 COPY ./requirements.txt requirements.txt
-RUN pip install -u -r requirements.txt
+RUN pip install --user -r requirements.txt
 
 
