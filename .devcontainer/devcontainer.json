@@ -1,9 +1,10 @@
 {
-	//  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4",
+	  "image": "ghcr.io/boettiger-lab/nasa-tops:latest",
 	  "name": "NASA TOPS Environment",
-	  "build": {
-		"dockerfile": "Dockerfile"
-	  },
+	  // build image as a github-action and grab instead; faster.
+	  // "build": {
+	  //	"dockerfile": "Dockerfile"
+	  //},
 	  "waitFor": "onCreateCommand",
 	  "customizations": {
 		"codespaces": {
