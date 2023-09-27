@@ -10,7 +10,7 @@ USER rstudio
 WORKDIR /home/rstudio
 COPY renv.lock renv.lock
 COPY requirements.txt requirements.txt
-EXPORT PATH=$PATH:/home/rstudio/.local/bin
+ENV PATH=$PATH:/home/rstudio/.local/bin
 RUN pip install --user -r requirements.txt
 RUN install2.r rstac spData
 
