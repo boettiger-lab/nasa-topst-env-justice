@@ -8,9 +8,9 @@ RUN bash install_dev_osgeo.sh
 
 USER rstudio
 WORKDIR /home/rstudio
-COPY ./renv.lock renv.lock
+COPY renv.lock renv.lock
 RUN Rscript -e "renv::activate(profile='spatial'); renv::restore(lockfile='renv.lock')"
-COPY ./requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN pip install --user -r requirements.txt
 
 
