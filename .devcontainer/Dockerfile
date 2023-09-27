@@ -8,13 +8,8 @@ RUN bash install_dev_osgeo.sh
 
 USER rstudio
 WORKDIR /home/rstudio
-RUN <<-EOF
-  Rscript -e 'renv::activate(profile = "spatial") \\
-  install.packages(c("tidyverse", "rmarkdown", "languageserver")) \\
-  install.packages(c("sf", "terra", "gdalcubes", "stars", "rstac"), repos = "https://cran.r-project.org") \\
-  renv::snapshot()'
-EOF
-
+COPY ./renv.lock renv.lock
+RUN Rscript -e "renv::activate(profile='spatial'); renv::restore(lockfile='renv.lock')"
 COPY ./requirements.txt requirements.txt
 RUN pip install --user -r requirements.txt
 
