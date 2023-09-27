@@ -8,7 +8,6 @@ RUN bash install_dev_osgeo.sh
 
 USER rstudio
 WORKDIR /home/rstudio
-COPY renv.lock renv.lock
 COPY requirements.txt requirements.txt
 ENV PATH=$PATH:/home/rstudio/.local/bin
 RUN pip install --user -r requirements.txt
