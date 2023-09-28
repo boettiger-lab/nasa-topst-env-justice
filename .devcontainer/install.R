@@ -6,6 +6,6 @@
 install.packages(c("rstac", "spData"))
 remotes::install_github("boettiger-lab/earthdatalogin")
 remotes::install_github('r-tmap/tmap')
-install.packages(c("IRkernel", "languageserver", "httpgd"))
 
-IRkernel::installspec()
+#install.packages(c("IRkernel", "languageserver", "httpgd"))
+#IRkernel::installspec()
