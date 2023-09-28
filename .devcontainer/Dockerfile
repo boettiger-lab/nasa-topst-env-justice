@@ -11,6 +11,5 @@ WORKDIR /home/rstudio
 COPY requirements.txt requirements.txt
 ENV PATH=$PATH:/home/rstudio/.local/bin
 RUN pip install --user -r requirements.txt
-RUN install2.r rstac spData tmap
-RUN Rscript -e 'IRkernel::installspec()'
+RUN Rscript install.R
 
