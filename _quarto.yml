@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: docs
+execute:
+  freeze: auto
+
+website:
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - file: index.qmd
+        icon: house
+        text: About
+      - text: JuypterHub
+        icon: pc-display-horizontal
+        href: https://openscapes.2i2c.cloud/
+      - icon: book
+        text: Catalog
+        href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
+      - icon: github
+        text: GitHub repo
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice
+      - icon: globe-americas
+        text: Author Homepage
+        href: https://carlboettiger.info
+      - section: Examples
+        contents:
+          - text: Computing Environments
+            href: contents/computing-environment.qmd

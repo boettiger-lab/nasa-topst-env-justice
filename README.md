@@ -9,9 +9,10 @@ This is the development repository of educational training materials we are buil
 
 ## Quickstart [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
-Click _Open in GitHub Codespaces_ to try out this respository in a GitHub-hosted cloud instance.  This instance provides both VSCode or RStudio environments with most necessary packages already installed.  This environment can also be accessed in a local VSCode as a devcontainer or as a [Docker image](https://github.com/boettiger-lab/nasa-topst-env-justice/pkgs/container/nasa-tops).
+Click _Open in GitHub Codespaces_ to try out this repository in a GitHub-hosted cloud instance.  This instance provides both VSCode or RStudio environments with most necessary packages already installed.  This environment can also be accessed in a local VSCode as a [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) or as a [Docker image](https://github.com/boettiger-lab/nasa-topst-env-justice/pkgs/container/nasa-tops).
 
-Open [intro.ipynb](stac.ipynb) (Python) or [intro.qmd](intro.qmd) (R) notebooks to get started.  
+Open [intro.ipynb](stac.ipynb) (_Python_) or [intro.qmd](intro.qmd) (_R_) notebooks to get started.  
+
 
 ## Abstract
 
