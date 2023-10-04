@@ -23,7 +23,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path="img/",
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  eval=FALSE
 )
 ```
 
@@ -84,7 +85,7 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/LPCLOUD") |>
 ```
 
 
-Note that `r length(items$features)` features have matched our search criteria! Each feature represents a 'snapshot' image taken by the satellite as it passes by (this is a harmonized product so actually there's quite a lot of post-processing.)  Each feature thus shares the same bounding box, projection, and timestamp, but may consist of many different 'assets', different COG files representing the different spectral bands on the satellite camera instrument.  Each feature can potentially include quite extensive metadata about the feature, including details of instrument itself or from post-processing, such as cloud cover.  Unfortunately, EarthData's STAC metadata tends to be quite sparse. 
+Note that many features have matched our search criteria! Each feature represents a 'snapshot' image taken by the satellite as it passes by (this is a harmonized product so actually there's quite a lot of post-processing.)  Each feature thus shares the same bounding box, projection, and timestamp, but may consist of many different 'assets', different COG files representing the different spectral bands on the satellite camera instrument.  Each feature can potentially include quite extensive metadata about the feature, including details of instrument itself or from post-processing, such as cloud cover.  Unfortunately, EarthData's STAC metadata tends to be quite sparse. 
 
 
 
