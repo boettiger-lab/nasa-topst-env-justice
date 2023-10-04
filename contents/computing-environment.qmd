@@ -4,9 +4,9 @@ format: html
 ---
 
 
-# Portable Reproducibility :onion:
+# Portable Reproducibility
 
-Noam Ross says that good reproducibility is like an onion :onion: -- it comes
+Noam Ross says that good reproducibility is like an onion -- it comes
 in many layers.  There's a purpose to containerized environments deployed on
 cloud-hosted virtual machines.  And we believe students should be able to leverage
 those things, easily and rapidly deploying cloud-hosted images, and will get
@@ -24,6 +24,9 @@ be that a local VSCode editor on your laptop, or an RStudio Server instance
 running up on Microsoft Azure cloud.  
 
 ## On the cloud: Codespaces
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
+
 
 By clicking the "open in codespaces" button on the README in GitHub, users
 will be placed into a free cloud-based virtual machine running a VSCode editor
