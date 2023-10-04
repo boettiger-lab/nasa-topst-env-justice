@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/gdalcubes-stac-cog.html</loc>
-    <lastmod>2023-10-04T16:16:43.644Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/stac.html</loc>
-    <lastmod>2023-10-04T16:16:44.952Z</lastmod>
-  </url>
-  <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/computing-environment.html</loc>
-    <lastmod>2023-10-04T16:16:45.540Z</lastmod>
+    <lastmod>2023-10-04T16:18:48.730Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
-    <lastmod>2023-10-04T16:16:45.924Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/intro.html</loc>
-    <lastmod>2023-10-04T16:16:46.280Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/gdalcubes-stac-cog.html</loc>
+    <lastmod>2023-10-04T16:18:48.018Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/stac-R.html</loc>
-    <lastmod>2023-10-04T16:16:46.924Z</lastmod>
+    <lastmod>2023-10-04T16:18:46.766Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/intro.html</loc>
+    <lastmod>2023-10-04T16:18:45.874Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/stac.html</loc>
+    <lastmod>2023-10-04T16:18:47.422Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
+    <lastmod>2023-10-04T16:18:48.314Z</lastmod>
   </url>
 </urlset>
