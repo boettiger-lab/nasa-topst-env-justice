@@ -1,0 +1,201 @@
+---
+title: "Intro"
+format: html
+---
+
+
+
+
+```{r setup}
+library(tidyverse)
+library(rstac)
+library(gdalcubes)
+library(stars)
+library(tmap)
+gdalcubes::gdalcubes_options(parallel = TRUE)
+```
+
+```{r}
+## STAC Search over 400 million assets.
+box <- c(xmin=-122.51006, ymin=37.70801, xmax=-122.36268, ymax=37.80668) 
+start_date <- "2022-06-01"
+end_date <- "2022-08-01"
+items <- 
+  stac("https://earth-search.aws.element84.com/v0/") |>
+  stac_search(collections = "sentinel-s2-l2a-cogs",
+              bbox = box,
+              datetime = paste(start_date, end_date, sep="/"),
+              limit = 100) |>
+  post_request() 
+```
+
+## Low-level approach
+
+```{r}
+# 12 matching features
+length(items$features)
+```
+
+```{r}
+items$features[[1]] |> names()
+```
+
+```{r}
+items$features[[1]]$assets |> names()
+```
+
+```{r}
+b04 <- items$features[[1]]$assets$B04 
+c(b04$title, b04$type)
+```
+
+
+```{r}
+i <- 1
+
+b02 <- paste0("/vsicurl/", items$features[[i]]$assets$B02$href)
+b03 <- paste0("/vsicurl/", items$features[[i]]$assets$B03$href)
+b04 <- paste0("/vsicurl/", items$features[[i]]$assets$B04$href)
+
+```
+
+
+```{r}
+vis <- read_stars(c(b04,b03,b02))
+b04
+plot(vis)
+```
+
+
+```{r}
+# Don't try this, will definitely crash!
+#ggplot() + geom_stars(data = vis) + scale_fill_identity()
+```
+
+
+
+```{r}
+red <- read_stars(b04)
+b08 <- paste0("/vsicurl/", items$features[[i]]$assets$B08$href)
+nir <- read_stars(b08)
+ndvi <- (nir - red) / (nir + red)
+plot(ndvi)
+```
+
+This approach Does not mask clouds and fill or average over other images -- we've used only one of the matching assets so far. While a single image here covers our area of interest (AOI),  in an expanded spatial analysis we would need to tile together overlapping images to ensure we cover the full AOI.  This also operates at native resolution, which can hurt performance when scaling to larger AOI.
+
+
+
+## Newer cloud-native approach
+
+```{r}
+
+col <-
+  stac_image_collection(items$features,
+                        asset_names = c("B02", "B03", "B04","B08", "SCL"),
+                        property_filter = \(x) {x[["eo:cloud_cover"]] < 20})
+
+cube <- cube_view(srs = "EPSG:4326",  
+                  extent = list(t0 = start_date, t1 = end_date,
+                                left = box[1], right = box[3],
+                                top = box[4], bottom = box[2]),
+                  nx = 2400, ny = 2400, dt = "P1M",
+                  aggregation = "median", resampling = "average")
+
+S2.mask <- image_mask("SCL", values=c(3,8,9)) # mask clouds and cloud shadows
+```
+
+```{r}
+raster_cube(col, cube, mask = S2.mask) |>
+  select_bands(c("B02", "B03", "B04")) |>
+  aggregate_time(dt="P1M") |>
+  plot(rgb=3:1)
+
+```
+
+```{r}
+
+ndvi <- raster_cube(col, cube, mask = S2.mask) |>
+  select_bands(c("B04", "B08")) |>
+  apply_pixel("(B08-B04)/(B08+B04)", "NDVI") |>
+  reduce_time(c("mean(NDVI)")) |>
+  st_as_stars()
+
+```
+
+
+```{r}
+tm_shape(ndvi) + 
+  tm_raster(col.scale = tm_scale_continuous(values = viridisLite::mako(30)))
+
+```
+
+
+```{r}
+CASanFrancisco1937 <- "https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
+redlines <- st_read(paste0("/vsicurl/", CASanFrancisco1937)) |> st_make_valid()
+```
+
+
+
+
+
+
+
+
+```{r}
+tm_shape(ndvi) + 
+  tm_raster(col.scale = tm_scale_continuous(values = viridisLite::mako(30))) +
+  tm_shape(redlines) + tm_borders(col="holc_grade", lwd = 4, 
+                                  col.scale = tm_scale_categorical(values=c(
+                                    A = "#729765",
+                                    B = "#75a4b3",
+                                    C = "#c6c167",
+                                    D = "#b0707b" ))) +
+  tm_text(text = "holc_grade", size = 0.5, col = "holc_grade")
+
+```
+```{r}
+aves <- stars::st_extract(ndvi, redlines, time_column = "time", FUN=mean)
+```
+
+
+```{r}
+
+ndvi_aves <- raster_cube(col, cube, mask = S2.mask) |>
+  select_bands(c("B04", "B08")) |>
+  apply_pixel("(B08-B04)/(B08+B04)", "NDVI") |>
+  reduce_time(c("mean(NDVI)")) |>
+  extract_geom(redlines, FUN=mean)
+
+```
+
+```{r}
+redlines |> 
+  rowid_to_column("FID") |>
+  left_join(ndvi_aves) |>
+  as_tibble() |>
+  group_by(holc_grade) |>
+  summarise(mean = mean(NDVI_mean))
+```
+```{r}
+vec <- as_tibble(aves) |> left_join(redlines)
+vec |> group_by(holc_grade) |>
+  summarise(ndvi = mean(NDVI_mean, na.rm=TRUE))
+```
+
+```{r}
+tm_basemap(server =providers$OpenStreetMap, zoom=13) + 
+tm_shape(aves) + 
+  tm_polygons("NDVI_mean", 
+              fill.scale = tm_scale_continuous(values = "Greens")) +
+  tm_shape(redlines) + 
+  tm_borders(col="holc_grade", 
+             lwd = 4, 
+             col.scale = tm_scale_categorical(values=c(
+                A = "#729765",
+                B = "#75a4b3",
+                C = "#c6c167",
+                D = "#b0707b" ))) +
+  tm_text(text = "holc_grade", size = 0.5)
+```
