@@ -155,13 +155,16 @@ tm_shape(ndvi) +
   tm_text(text = "holc_grade", size = 0.5, col = "holc_grade")
 
 ```
+
+
+
+
 ```{r}
-aves <- stars::st_extract(ndvi, redlines, time_column = "time", FUN=mean)
 ```
 
 
 ```{r}
-
+# more scalable performance with gdalcubes::extract_geom
 ndvi_aves <- raster_cube(col, cube, mask = S2.mask) |>
   select_bands(c("B04", "B08")) |>
   apply_pixel("(B08-B04)/(B08+B04)", "NDVI") |>
@@ -171,22 +174,29 @@ ndvi_aves <- raster_cube(col, cube, mask = S2.mask) |>
 ```
 
 ```{r}
-redlines |> 
+ave_ndvi <- redlines |> 
   rowid_to_column("FID") |>
-  left_join(ndvi_aves) |>
+  left_join(ndvi_aves) 
+
+ave_ndvi |>
   as_tibble() |>
   group_by(holc_grade) |>
   summarise(mean = mean(NDVI_mean))
 ```
+
+
 ```{r}
-vec <- as_tibble(aves) |> left_join(redlines)
-vec |> group_by(holc_grade) |>
-  summarise(ndvi = mean(NDVI_mean, na.rm=TRUE))
+# "standard method"
+# aves <- stars::st_extract(ndvi, redlines, FUN=mean)
+
+# vec <- as_tibble(aves) |> left_join(redlines)
+#vec |> group_by(holc_grade) |>
+#   summarise(ndvi = mean(NDVI_mean, na.rm=TRUE))
 ```
 
 ```{r}
 tm_basemap(server =providers$OpenStreetMap, zoom=13) + 
-tm_shape(aves) + 
+tm_shape(ave_ndvi) + 
   tm_polygons("NDVI_mean", 
               fill.scale = tm_scale_continuous(values = "Greens")) +
   tm_shape(redlines) + 
