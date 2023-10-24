@@ -3,6 +3,17 @@ title: "Intro"
 format: html
 ---
 
+***WORK IN PROGRESS***
+
+```{r}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, error=FALSE)
+```
+
+# Overview
+
+This module provides an introduction to concepts in cloud-native geospatial analyses through the lens of environmental justice.  
+This module assumes familiarity with the R computing environment, ideally through the core concepts of reading, visualizing, and manipulating data as introduced in [R For Data Science](https://r4ds.hadley.nz/). 
+While prior experience in geospatial tooling is not assumed, this module is not intended to be a complete tutorial on geospatial concepts -- please consider the text [Geocomputation with R](https://r.geocompx.org/) for a more thorough treatment.
 
 
 
@@ -11,19 +22,74 @@ library(tidyverse)
 library(rstac)
 library(gdalcubes)
 library(stars)
-library(tmap)
+library(tmap) # must be v4, install using remotes::install_github('r-tmap/tmap')
 gdalcubes::gdalcubes_options(parallel = TRUE)
 ```
 
+
+# Spatial Vector Objects
+
+Spatial data objects come in essentially two flavors: **vector** and **raster** objects.  
+Spatial **vector** data can be thought of as a special case of a tabular data (or relational database) structure, consisting of rows and columns.  
+Each row represents a "feature" defined by explicit spatial coordinate type such as a point, line, or polygon, as indicated in a special "geometry" column.
+Additionally, all spatial data objects (vectors or rasters) include core spatial metadata information, indicating the spatial projection 
+
+We read in geospatial vector data which uses polygons to represent each housing area assessed by the Home Owners Loan Corporation
+
+```{r}
+CASanFrancisco1937 <- "https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
+redlines <- st_read(paste0("/vsicurl/", CASanFrancisco1937)) |> st_make_valid()
+```
+
+```{r}
+
+# Use a color scheme for grades based on HOLC maps
+colors <-  tm_scale_categorical(values=c(A = "#729765",
+                                         B = "#75a4b3",
+                                         C = "#c6c167",
+                                         D = "#b0707b" ))
+
+
+tmap_mode("view")
+tm_shape(redlines) + 
+  tm_polygons("holc_grade", fill.scale = colors, fill_alpha = 0.6)
+```
+
+We can also make rich static plots with `tmap`, e.g. 
+
+```{r}
+tmap_mode("plot")
+
+
+  tm_basemap(providers$CartoDB.Positron) + 
+  tm_shape(redlines) + 
+  tm_borders(col="holc_grade", 
+             lwd = 4, 
+             col.scale = colors) +
+  tm_text(text = "holc_grade", size=0.5, col="holc_grade") +
+  tm_legend_hide()
+
+```
+
+
+# Spatial Rasters
+
+
+
+
 ```{r}
 ## STAC Search over 400 million assets.
-box <- c(xmin=-122.51006, ymin=37.70801, xmax=-122.36268, ymax=37.80668) 
+
+# manual bounding box
+# box <-  c(xmin=-122.51006, ymin=37.70801, xmax=-122.36268, ymax=37.80668)
+# or just extract bounding box from city map:
+box <- st_bbox(redlines)  
 start_date <- "2022-06-01"
 end_date <- "2022-08-01"
 items <- 
   stac("https://earth-search.aws.element84.com/v0/") |>
   stac_search(collections = "sentinel-s2-l2a-cogs",
-              bbox = box,
+              bbox = c(box),
               datetime = paste(start_date, end_date, sep="/"),
               limit = 100) |>
   post_request() 
@@ -51,7 +117,7 @@ c(b04$title, b04$type)
 
 
 ```{r}
-i <- 1
+i <- 11
 
 b02 <- paste0("/vsicurl/", items$features[[i]]$assets$B02$href)
 b03 <- paste0("/vsicurl/", items$features[[i]]$assets$B03$href)
@@ -61,9 +127,17 @@ b04 <- paste0("/vsicurl/", items$features[[i]]$assets$B04$href)
 
 
 ```{r}
-vis <- read_stars(c(b04,b03,b02))
-b04
-plot(vis)
+vis <- read_stars(c(b04,b03,b02)) |> merge()
+plot(vis, rgb=1:3)
+```
+
+Note that even seemingly simple tasks like cropping to a spatial subset require manual re-projection first, and this is relatively computationally intensive. This process will be much faster when we use the approach of `gdalcubes` instead.  
+
+```{r}
+vis |> st_crop(redlines)
+```
+```{r}
+vis_sf <- vis |> st_transform(st_crs(redlines)) |> st_crop(redlines)
 ```
 
 
@@ -82,7 +156,7 @@ ndvi <- (nir - red) / (nir + red)
 plot(ndvi)
 ```
 
-This approach Does not mask clouds and fill or average over other images -- we've used only one of the matching assets so far. While a single image here covers our area of interest (AOI),  in an expanded spatial analysis we would need to tile together overlapping images to ensure we cover the full AOI.  This also operates at native resolution, which can hurt performance when scaling to larger AOI.
+This approach does not mask clouds and fill or average over other images -- we've used only one of the matching assets so far. While a single image here covers our area of interest (AOI),  in an expanded spatial analysis we would need to tile together overlapping images to ensure we cover the full AOI.  This also operates at native resolution, which can hurt performance when scaling to larger AOI.
 
 
 
@@ -99,7 +173,7 @@ cube <- cube_view(srs = "EPSG:4326",
                   extent = list(t0 = start_date, t1 = end_date,
                                 left = box[1], right = box[3],
                                 top = box[4], bottom = box[2]),
-                  nx = 2400, ny = 2400, dt = "P1M",
+                  nx = 2400, ny = 2400, dt = "P1D",
                   aggregation = "median", resampling = "average")
 
 S2.mask <- image_mask("SCL", values=c(3,8,9)) # mask clouds and cloud shadows
@@ -129,15 +203,6 @@ tm_shape(ndvi) +
   tm_raster(col.scale = tm_scale_continuous(values = viridisLite::mako(30)))
 
 ```
-
-
-```{r}
-CASanFrancisco1937 <- "https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
-redlines <- st_read(paste0("/vsicurl/", CASanFrancisco1937)) |> st_make_valid()
-```
-
-
-
 
 
 
@@ -195,9 +260,10 @@ ave_ndvi |>
 ```
 
 ```{r}
-tm_basemap(server =providers$OpenStreetMap, zoom=13) + 
+tmap_mode("view")
 tm_shape(ave_ndvi) + 
   tm_polygons("NDVI_mean", 
+              fill_alpha = 0.8,
               fill.scale = tm_scale_continuous(values = "Greens")) +
   tm_shape(redlines) + 
   tm_borders(col="holc_grade", 
