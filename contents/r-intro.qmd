@@ -195,7 +195,7 @@ cube <- cube_view(srs = "EPSG:4326",
                   extent = list(t0 = start_date, t1 = end_date,
                                 left = box[1], right = box[3],
                                 top = box[4], bottom = box[2]),
-                  dx = 0.05, dy = 0.05, dt = "P1M",
+                  nx = 2400, ny = 2400, dt = "P1M",
                   aggregation = "median", resampling = "average")
 ```
 
