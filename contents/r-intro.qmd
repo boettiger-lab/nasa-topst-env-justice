@@ -38,8 +38,17 @@ We read in geospatial vector data which uses polygons to represent each housing 
 
 ```{r}
 CASanFrancisco1937 <- "https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
-redlines <- st_read(paste0("/vsicurl/", CASanFrancisco1937)) |> st_make_valid()
+
+redlines <- 
+  paste0("/vsicurl/", CASanFrancisco1937) |>
+  st_read() |> 
+  st_make_valid() # fix mangled/incomplete polygons
 ```
+
+Note how we add the prefix `/vsicurl/` in front of the URL.  Under the hood, nearly all of our spatial libraries call the [GDAL](https://gdal.org/user/virtual_file_systems.html) C library to do the heavy lifting of reading and working with the 100s of different file formats used to represent geospatial vector and raster data.  Using this prefix tells GDAL to use the "[Virtual Filesystem](https://gdal.org/user/virtual_file_systems.html)" rather than download the entire data object.
+
+
+We can get a quick visualization of these polygons overlaid on an interactive (Javascript leaflet) map by setting the `tmap` mode to `"view"`. 
 
 ```{r}
 
@@ -75,7 +84,8 @@ tmap_mode("plot")
 # Spatial Rasters
 
 
-
+Spatial rasters represent data on discrete regular grid cells (pixels). 
+Satellite imagery is a common source of spatial raster data that quickly becomes very very large, making the cloud native approaches such as the virtual filesystem mentioned above quite essential.
 
 ```{r}
 ## STAC Search over 400 million assets.
@@ -97,6 +107,8 @@ items <-
 
 ## Low-level approach
 
+Here we manually explore some of the information returned by the STAC catalog ...
+
 ```{r}
 # 12 matching features
 length(items$features)
@@ -116,40 +128,44 @@ c(b04$title, b04$type)
 ```
 
 
-```{r}
+Manually assemble the visual red-green-blue bands
+
+```{r stars_vis}
 i <- 11
 
-b02 <- paste0("/vsicurl/", items$features[[i]]$assets$B02$href)
-b03 <- paste0("/vsicurl/", items$features[[i]]$assets$B03$href)
-b04 <- paste0("/vsicurl/", items$features[[i]]$assets$B04$href)
+blue <- paste0("/vsicurl/", items$features[[i]]$assets$B02$href)
+green <- paste0("/vsicurl/", items$features[[i]]$assets$B03$href)
+red <- paste0("/vsicurl/", items$features[[i]]$assets$B04$href)
 
-```
-
-
-```{r}
-vis <- read_stars(c(b04,b03,b02)) |> merge()
+vis <- read_stars(c(red,green,blue)) |> merge()
 plot(vis, rgb=1:3)
 ```
 
 Note that even seemingly simple tasks like cropping to a spatial subset require manual re-projection first, and this is relatively computationally intensive. This process will be much faster when we use the approach of `gdalcubes` instead.  
 
-```{r}
-vis |> st_crop(redlines)
-```
-```{r}
-vis_sf <- vis |> st_transform(st_crs(redlines)) |> st_crop(redlines)
+```{r st_transform}
+# Note this low-level interace won't automatically deal with CRS transformations, but throws:
+# Error in st_crop.stars_proxy(vis, redlines) :
+# for cropping, the CRS of both objects has to be identical
+
+# vis |> st_crop(redlines)
+
+# We must manually reproject, which is slow and resource intensive
+# We'll avoid this by using gdalcubes which allows the warper to handle this instead
+
+# vis_sf <- vis |> st_transform(st_crs(redlines)) |> st_crop(redlines)
 ```
 
 
-```{r}
+```{r ggplot}
 # Don't try this, will definitely crash!
 #ggplot() + geom_stars(data = vis) + scale_fill_identity()
 ```
 
+We can still do network-based
 
-
-```{r}
-red <- read_stars(b04)
+```{r stars_ndvi}
+red <- read_stars(red)
 b08 <- paste0("/vsicurl/", items$features[[i]]$assets$B08$href)
 nir <- read_stars(b08)
 ndvi <- (nir - red) / (nir + red)
@@ -162,20 +178,31 @@ This approach does not mask clouds and fill or average over other images -- we'v
 
 ## Newer cloud-native approach
 
-```{r}
+Rather than manually parse the STAC catalog information, we can simply pass this metadata on to an intelligent function that knows how to use this.  We specify what bands of interest and request that any images where the metadata indicates over 20% cloud cover be dropped from the collection.  
 
+```{r}
 col <-
   stac_image_collection(items$features,
                         asset_names = c("B02", "B03", "B04","B08", "SCL"),
                         property_filter = \(x) {x[["eo:cloud_cover"]] < 20})
+```
 
+
+Seperately, we define an abstract "data cube" indicating how we want our data to look -- the bounding box in space and time, and the spatial/temporal resolution we want for the data.  
+
+```{r}
 cube <- cube_view(srs = "EPSG:4326",  
                   extent = list(t0 = start_date, t1 = end_date,
                                 left = box[1], right = box[3],
                                 top = box[4], bottom = box[2]),
-                  nx = 2400, ny = 2400, dt = "P1D",
+                  dx = 0.05, dy = 0.05, dt = "P1M",
                   aggregation = "median", resampling = "average")
+```
 
+Third, we create an image mask indicating which pixels should be removed by using the data quality control layer, which indicates pixels that post-processing had identified as corresponding to clouds or cloud shadows:
+
+
+```{r}
 S2.mask <- image_mask("SCL", values=c(3,8,9)) # mask clouds and cloud shadows
 ```
 
