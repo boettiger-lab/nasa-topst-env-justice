@@ -390,7 +390,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">extent =</span> <span class="fu">list</span>(<span class="at">t0 =</span> start_date, <span class="at">t1 =</span> end_date,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">left =</span> box[<span class="dv">1</span>], <span class="at">right =</span> box[<span class="dv">3</span>],</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">top =</span> box[<span class="dv">4</span>], <span class="at">bottom =</span> box[<span class="dv">2</span>]),</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dx =</span> <span class="fl">0.05</span>, <span class="at">dy =</span> <span class="fl">0.05</span>, <span class="at">dt =</span> <span class="st">"P1M"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nx =</span> <span class="dv">2400</span>, <span class="at">ny =</span> <span class="dv">2400</span>, <span class="at">dt =</span> <span class="st">"P1M"</span>,</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">aggregation =</span> <span class="st">"median"</span>, <span class="at">resampling =</span> <span class="st">"average"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Third, we create an image mask indicating which pixels should be removed by using the data quality control layer, which indicates pixels that post-processing had identified as corresponding to clouds or cloud shadows:</p>
@@ -455,10 +455,10 @@ Geodetic CRS:  WGS 84</code></pre>
 <pre><code># A tibble: 4 × 2
   holc_grade  mean
   &lt;chr&gt;      &lt;dbl&gt;
-1 A             NA
-2 B             NA
-3 C             NA
-4 D             NA</code></pre>
+1 A          0.316
+2 B          0.212
+3 C          0.195
+4 D          0.194</code></pre>
 </div>
 </div>
 <div class="cell">
