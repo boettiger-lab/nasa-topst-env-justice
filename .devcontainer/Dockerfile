@@ -6,6 +6,9 @@ RUN /rocker_scripts/install_python.sh
 ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/master/scripts/experimental/install_dev_osgeo.sh install_dev_osgeo.sh
 RUN bash install_dev_osgeo.sh
 
+# disable RStudio authentication inside devcontainer
+RUN echo "auth-none=1" >>/etc/rstudio/rserver.conf
+
 USER rstudio
 WORKDIR /home/rstudio
 COPY requirements.txt requirements.txt
