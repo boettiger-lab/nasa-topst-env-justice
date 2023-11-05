@@ -3,7 +3,7 @@ FROM ghcr.io/rocker-org/devcontainer/tidyverse:4.3
 
 # Consider setting up a renv / venv to house this stuff?
 RUN /rocker_scripts/install_python.sh
-ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/patch/osgeo/scripts/install_dev_osgeo.sh install_dev_osgeo.sh
+ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/master/scripts/experimental/install_dev_osgeo.sh install_dev_osgeo.sh
 RUN bash install_dev_osgeo.sh
 
 USER rstudio
