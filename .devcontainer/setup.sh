@@ -1,8 +1,7 @@
 #!/bin/bash
 
-## permission fails
-#sudo echo "auth-none=1" >> /etc/rstudio/rserver.conf
-
+sudo cp /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
+sudo sudo bash -c 'echo "USER=$USER" >>/etc/environment'
 
 ## set startup dir
 # mkdir -p ~/.local/share/rstudio/projects_settings
