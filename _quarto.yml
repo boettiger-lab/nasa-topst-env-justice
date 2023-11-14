@@ -12,12 +12,15 @@ website:
       - file: index.qmd
         icon: house
         text: About
-      - text: JuypterHub
-        icon: pc-display-horizontal
-        href: https://openscapes.2i2c.cloud/
       - icon: book
         text: Catalog
         href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
+      - text: Codespaces
+        icon: vscode
+        href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
+      - text: JuypterHub
+        icon: pc-display-horizontal
+        href: https://openscapes.2i2c.cloud/
       - icon: github
         text: GitHub repo
         href: https://github.com/boettiger-lab/nasa-topst-env-justice
@@ -28,3 +31,6 @@ website:
         contents:
           - text: Computing Environments
             href: contents/computing-environment.qmd
+          - text: Intro
+            href: contents/r-intro.qmd
+          
