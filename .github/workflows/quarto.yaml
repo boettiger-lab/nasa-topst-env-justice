@@ -18,6 +18,7 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render and Publish
+        if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
