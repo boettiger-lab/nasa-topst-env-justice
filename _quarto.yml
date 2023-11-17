@@ -8,22 +8,22 @@ execute:
   freeze: auto
 
 website:
-  sidebar:
-    style: "docked"
-    search: true
-    page-footer: 
-    left: "Copyright 2021, Norah Jones" 
+  page-footer:
     right: 
       - icon: github
         href: https://github.com/boettiger-lab/nasa-topst-env-justice
       - icon: globe-americas 
-        href: https://carlboettiger.info 
-
-
+        href: https://carlboettiger.info  
+  sidebar:
+    style: "docked"
+    search: true
     contents:
       - file: index.qmd
         icon: house
         text: About
+      - icon: github
+        text: GitHub source
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice
       - section: Resources
         contents:
           - text: Catalog of catalogs
