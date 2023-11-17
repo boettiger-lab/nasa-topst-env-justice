@@ -10,16 +10,16 @@ Noam Ross says that good reproducibility is like an onion -- it comes
 in many layers.  There's a purpose to containerized environments deployed on
 cloud-hosted virtual machines.  And we believe students should be able to leverage
 those things, easily and rapidly deploying cloud-hosted images, and will get
-to that here. But reproducibility doesn't often involve reconstructing many GB
-virtual computing environments from scratch.  Most of the time, we just want
+to that here. But most of the time, we just want
 to copy-paste a few lines of code and expect it to work. Many layers lie between
 these two extremes -- from package dependencies and system dependencies to
 containers, orchestration, metadata, even hardware requirements.  
 
-In many cases, it should be sufficient to copy-paste code from the examples shown
-here into your preferred computational environment -- it's okay to grab just what
-you need, you don't have to take the whole onion. But it is also our goal to make
-it as easy as possible to grab the whole onion and take it where you want it --
+In the examples here, copy-pasting the code blocks into your preferred environment
+should work in most cases.  Sometimes it may be necessary to install specific
+libraries or specific versions of those libraries.  And for fastest setup and 
+maximum reproducibility, users can deploy the fully containerized environment.
+It should be as easy as possible to grab the whole onion and take it where you want it --
 be that a local VSCode editor on your laptop, or an RStudio Server instance 
 running up on Microsoft Azure cloud.  
 
@@ -28,7 +28,7 @@ running up on Microsoft Azure cloud.
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
 
-By clicking the "open in codespaces" button on the README in GitHub, users
+By clicking the "Open in GitHub Codespaces" button on the README in GitHub, users
 will be placed into a free cloud-based virtual machine running a VSCode editor
 in their web browser.  
 This includes specific versions of R and python packages, the 
