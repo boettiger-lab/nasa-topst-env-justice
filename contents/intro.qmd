@@ -3,7 +3,14 @@ title: 'Examining Environmental Justice through Open Source, Cloud-Native Tools'
 
 ---
 
-This notebook provides a high-level overview illustrating a cloud-native workflow in both R and python.  
+This executable notebook provides an opening example to illustrate a cloud-native workflow in both R and python. 
+Pedagogy research emphasizes the importance of "playing the whole game" before breaking down every pitch and hit.
+We intentionally focus on powerful high-level tools (STAC API, COGs, datacubes) to illustrate how a few chunks of
+code can perform a task that would be far slower and more verbose in a traditional file-based, download-first workflow.
+Note the close parallels between R and Python syntax. This arises because both languages wrap the same underlying 
+tools (the STAC API and GDAL warper) and handle many of the nuisances of spatial data -- from re-projections and
+resampling to mosaic tiles -- without us noticing.
+
 
 ::: {.panel-tabset}
 
@@ -31,11 +38,15 @@ from pystac_client import Client
 
 
 
-## Escaping the file paradigm
+## Data discovery
 
-Large geospatial data comes in many different formats and is frequently divided into many individual files or "assets" which may represent different points in space, time, sensor bands or variables. Many users are familiar with file-based workflows, where each file type is read into the computational environment by a specific tool and that workflows proceed file-by-file. However, the same data can be represented in many different formats (NetCDF or tiff, say) and subdivided in different ways. Importantly, the file-based-divisions often do not reflect the way a user might want to work with the data.  For instance, a NASA product may provide sea-surface-temperature as one NetCDF file per day, with each file covering the entire global extent, while a user wants to examine trends in the data over time but only in a certain regional area. In such cases, it is inefficient to download data for the whole globe over many files.  Just as end-users in high level languages are not expected to manage very low-level concepts like memory block sizes, geospatial data scientists need not worry about these file serialization details when they have good high-level abstractions that can do it for them.  
+<!--
+Large geospatial data comes in many different formats and is frequently divided into many individual files or "assets" which may represent different points in space, time, sensor bands or variables. Many users are familiar with file-based workflows, where each file type is read into the computational environment by a specific tool and that workflows proceed file-by-file. However, the same data can be represented in many different formats (ncdf or tiff, say) and subdivided in different ways. Importantly, the file-based-divisions often do not reflect the way a user might want to work with the data.  For instance, a NASA ncdf product may provide sea-surface-temperature as one file per day, with each file covering the entire global extent, while a user wants to examine trends in the data over time but only in a certain regional area. In such cases, it is inefficient to download data for the whole globe over many files.  Just as end-users in high level languages are not expected to manage very low-level concepts like memory block sizes, geospatial data scientists need not worry about these file serialization details when they have good high-level abstractions that can do it for them.  
+-->
 
-
+The first step in many workflows involves discovering individual spatial data files covering the space, time, and variables of interest. Here we use a [STAC](https://stacspec.org/en) Catalog API to recover a list of candidate data. 
+We dig deeper into how this works and what it returns in later recipes. This example searches for images in a lon-lat bounding box from a collection of Cloud-Optimized-GeoTIFF (COG) images taken by Sentinel2 satellite mission.
+This function will not download any imagery, it merely gives us a list of metadata about available images, including the access URLs.
 
 
 ::: {.panel-tabset}
@@ -54,6 +65,7 @@ items <-
               bbox = box,
               datetime = paste(start_date, end_date, sep="/"),
               limit = 100) |>
+  ext_query("eo:cloud_cover" < 20) |>
   post_request()
 ```
 
@@ -76,7 +88,10 @@ items = (
 
 :::
 
-We can build an abstract data cube from the assets and metadata returned by the STAC catalog:
+We pass this list of images to a high-level utilty (`gdalcubes` in R, `odc.stac` in python) that will do all of the heavy lifting.  Using the URLs and metadata provided by STAC, 
+these functions can extract only our data of interest (given by the bounding box) without downloading unnecessary regions or bands. While streaming the data, these functions
+will also reproject it into the desired coordinate reference system -- (an often costly operation to perform in R) and can potentially resample or aggregate the data to a desired 
+spatial resolution. (The R code will also resample from images in overlapping areas to replace pixels masked by clouds)
 
 
 ::: {.panel-tabset}
@@ -86,20 +101,18 @@ We can build an abstract data cube from the assets and metadata returned by the 
 
 ```{r}
 #| message=FALSE, warning=FALSE
-col <- stac_image_collection(items$features,
-                             asset_names = c("B04", "B08", "SCL"),
-                             property_filter = \(x){
-                               x[["eo:cloud_cover"]] < 20
-                             })
+col <- stac_image_collection(items$features, asset_names = c("B08", "B04", "SCL"))
 
-cube <- cube_view(srs = "EPSG:4326",
+cube <- cube_view(srs ="EPSG:4326",
                   extent = list(t0 = start_date, t1 = end_date,
                                 left = box[1], right = box[3],
                                 top = box[4], bottom = box[2]),
-                  nx = 1200, ny = 1200, dt = "P1D",
+                  dx = 0.0001, dy = 0.0001, dt = "P1D",
                   aggregation = "median", resampling = "average")
 
 mask <- image_mask("SCL", values=c(3, 8, 9)) # mask clouds and cloud shadows
+
+data <-  raster_cube(col, cube, mask = mask)
 ```
 
 ## Python
@@ -107,9 +120,9 @@ mask <- image_mask("SCL", values=c(3, 8, 9)) # mask clouds and cloud shadows
 ```{python}
 data = odc.stac.load(
     items,
-    crs="EPSG:32610",
+    crs="EPSG:4326",
     bands=["nir08", "red"],
-    resolution=30,
+    resolution=0.0001,
     bbox=box
 )
 
@@ -117,7 +130,8 @@ data = odc.stac.load(
 
 :::
 
-We can calculate NDVI
+We can do arbitrary calculations on this data as well. Here we calculate NDVI, a widely used measure of greenness that can be used to determine tree cover. 
+(Note that the R example uses lazy evaluation, and can thus perform these calculations while streaming)
 
 ::: {.panel-tabset}
 
@@ -125,8 +139,7 @@ We can calculate NDVI
 
 ```{r}
 #| message=FALSE
-
-ndvi <- raster_cube(col, cube, mask = mask) |>
+ndvi <- data |>
   select_bands(c("B04", "B08")) |>
   apply_pixel("(B08-B04)/(B08+B04)", "NDVI") |>
   reduce_time(c("mean(NDVI)"))
@@ -137,7 +150,6 @@ ndvi_stars <- st_as_stars(ndvi)
 ## Python
 
 ```{python}
-
 red = data.red
 nir = data.nir08
 
@@ -153,14 +165,45 @@ ndvi = ndvi.where(ndvi <= 1)
 
 :::
 
-## Zonal statistics 
 
-We can also extract values at particular points or values falling within particular polygons.  One common operation is to summarise the values of all pixels falling within a given polygon, e.g. by the average value. 
+And we plot the result.  The long rectangle of Golden Gate Park is clearly visible in the North-West.
 
-Here, we examine the present-day impact of historic "red-lining" of US cities during the Great Depression using data from the [Mapping Inequality](https://dsl.richmond.edu/panorama/redlining) project.  All though this racist practice was banned by federal law under the Fair Housing Act of 1968, the systemic scars of that practice are still so deeply etched on our landscape that the remain visible from space -- "red-lined" areas (graded "D" under the racist HOLC scheme) show systematically lower greenness than predominately-white neighborhoods (Grade "A"):
+::: {.panel-tabset}
+
+## R
 
 ```{r}
-#| message = FALSE
+#| message = FALSE, warning = FALSE
+mako <- tm_scale_continuous(values = viridisLite::mako(30))
+fill <- tm_scale_continuous(values = "Greens")
+
+tm_shape(ndvi_stars) + tm_raster(col.scale = mako)
+```
+
+## Python
+
+```{python}
+import matplotlib as plt
+cmap = plt.colormaps.get_cmap('viridis')  # viridis is the default colormap for imshow
+cmap.set_bad(color='black')
+
+ndvi.plot.imshow(row="time", cmap=cmap, add_colorbar=False, size=5)
+```
+
+:::
+
+# From NDVI to Environmental Justice
+
+We examine the present-day impact of historic "red-lining" of US cities during the Great Depression using data from the [Mapping Inequality](https://dsl.richmond.edu/panorama/redlining) project.  All though this racist practice was banned by federal law under the Fair Housing Act of 1968, the systemic scars of that practice are still so deeply etched on our landscape that the remain visible from space -- "red-lined" areas (graded "D" under the racist HOLC scheme) show systematically lower greenness than predominately-white neighborhoods (Grade "A").  Trees provide many benefits, from mitigating urban heat to biodiversity, real-estate value, to health.
+
+
+## Zonal statistics 
+
+In addition to large scale raster data such as satellite imagery, the analysis of vector shapes such as polygons showing administrative regions is a central component of spatial analysis, and particularly important to spatial social sciences. The red-lined areas of the 1930s are one example of spatial vectors. One common operation is to summarise the values of all pixels falling within a given polygon, e.g. computing the average greenness (NDVI) 
+
+
+```{r}
+#| message = FALSE, results="hide"
 sf <- st_read("/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson") |>
   st_make_valid()
 poly <- ndvi |> extract_geom(sf, FUN = mean, reduce_time = TRUE)
@@ -172,9 +215,6 @@ We plot the underlying NDVI as well as the average NDVI of each polygon, along w
 
 ```{r}
 #| message = FALSE, warning = FALSE
-mako <- tm_scale_continuous(values = viridisLite::mako(30))
-fill <- tm_scale_continuous(values = "Greens")
-
 tm_shape(ndvi_stars) + tm_raster(col.scale = mako) +
   tm_shape(sf) + tm_polygons('NDVI', fill.scale = fill) +
   tm_shape(sf) + tm_text("holc_grade", col="darkblue", size=0.6) +

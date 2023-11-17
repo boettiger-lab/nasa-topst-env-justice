@@ -1,5 +1,5 @@
 ---
-title: "NASA TOPS-T Module"
+title: "NASA TOPS-T: Cloud Native Geospatial in R & Python"
 format: html
 ---
 
@@ -8,8 +8,30 @@ format: html
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Docker Image :whale2:](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml/badge.svg)](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml)
+[![](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
 
 ---
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
+This project seeks to introduce cloud-native approaches to geospatial analysis in R & Python through the lens of environmental justice applications.  This is not meant as a complete course in geospatial analysis -- though we encourage interested readers to consider [Geocomputation in R or Python](https://geocompx.org/) as an excellent resource.  We present opinionated recipes meant to empower users with the following design goals:
+
+- Open science: open source software, open data, open standards, and reproducibility are emphasized.
+- Recipes are presented as reproducible computational notebooks (Quarto and Jupyter) set in narrative analysis.
+- Access to cloud-based _compute_ is not required. The high speed networks of commercial cloud providers can accelerate network-bound operations, but can run from anywhere.
+- Access to a powerful laptop or desktop is not required either.  Examples can run from a browser interface on free compute resources such as Codespaces.
+- Portable software environments: a Docker container with precise software used to produce these examples. The container  is build from the included Dockerfile using the included GitHub Action and is deployed by the Codespaces instance.
+- Alignment between R and Python: recipes will try to show approaches in both languages and seek to utilize common interfaces (such as STAC and GDAL) that can be shared across these platforms.
+
+
+**This is a work in progress!** Check back often, and feedback welcome! Test these modules, file an [issue](https://github.com/boettiger-lab/nasa-topst-env-justice/issues) or [pull request](https://github.com/boettiger-lab/nasa-topst-env-justice/pulls),  launch into a Codespaces environment, or reach out on the [discussion board](https://github.com/boettiger-lab/nasa-topst-env-justice/discussions/7).
+
+
+***What is "cloud-native" anyway?***  We define cloud-native to mean simply that data is accessed over http range request methods, rather than downloading entire files. Code-based examples will develop why this is important and how it differs from renting cloud-based compute.  The core philosophy is that what many users already know how to do locally translates pretty seamlessly here, and then a bit extra is required to coerce certain software to stay in 'range request' mode and not get greedy trying to download everything. Some authors define this concept somewhat differently, and certainly not all range requests give the same performance, nor are http range requests best in all cases.  
+
+## Acknowledgements 
+
+Thanks to input, suggestions, feedback and ideas from so many amazing folks in the OpenScapes community and input and financial support from the NASA TOPS community. 
+
+<img align="right" src="https://zenodo.org/record/7742997/files/Tops_Badge_Nasa.png" width="50" alt="Transform to Open Science Logo that shows a top as a rocket taking off and the text Transform to Open Science in the white vapor plume around the launch site">
+
+<img align="right" src="https://openscapes.org/images/logo/openscapes_hex_badge.png" width="60" alt="OpenScapes Hex Logo">
