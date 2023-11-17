@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.qmd"
+    - "!drafts/"
 execute:
   freeze: auto
 
@@ -8,29 +11,41 @@ website:
   sidebar:
     style: "docked"
     search: true
+    page-footer: 
+    left: "Copyright 2021, Norah Jones" 
+    right: 
+      - icon: github
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice
+      - icon: globe-americas 
+        href: https://carlboettiger.info 
+
+
     contents:
       - file: index.qmd
         icon: house
         text: About
-      - icon: book
-        text: Catalog
-        href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
-      - text: Codespaces
-        icon: vscode
-        href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
-      - text: JuypterHub
-        icon: pc-display-horizontal
-        href: https://openscapes.2i2c.cloud/
-      - icon: github
-        text: GitHub repo
-        href: https://github.com/boettiger-lab/nasa-topst-env-justice
-      - icon: globe-americas
-        text: Author Homepage
-        href: https://carlboettiger.info
-      - section: Examples
+      - section: Resources
         contents:
-          - text: Computing Environments
+          - text: Catalog of catalogs
+            icon: book
+            href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
+          - text: Codespaces
+            icon: pc-horizontal
+            href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
+          - text: JuypterHub
+            icon: cloud
+            href: https://openscapes.2i2c.cloud/
+      - section: Recipes
+        contents:
+          - text: Introduction
+            icon: play-btn
+            href: contents/intro.qmd
+          - text: NASA EarthData
+            icon: rocket
+            href: contents/earthdata.qmd  
+      - section: Background
+        contents:
+          - text: Portable Environments
             href: contents/computing-environment.qmd
-          - text: Intro
-            href: contents/r-intro.qmd
+
           
