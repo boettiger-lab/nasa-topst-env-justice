@@ -133,6 +133,7 @@ wcwidth==0.2.6
 webcolors==1.13
 webencodings==0.5.1
 websocket-client==1.6.3
+xagg==0.1.4
 xarray==2023.8.0
 zict==3.0.0
 zipp==3.17.0
