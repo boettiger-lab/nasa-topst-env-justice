@@ -16,3 +16,5 @@ RUN pip install --user -r requirements.txt
 COPY install.R install.R
 RUN Rscript install.R
 
+# some teaching preferences
+RUN git --system config pull.rebase false

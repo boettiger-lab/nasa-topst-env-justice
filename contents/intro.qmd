@@ -30,7 +30,16 @@ gdalcubes::gdalcubes_options(parallel = TRUE)
 
 ```{python}
 import odc.stac
+import rioxarray
 from pystac_client import Client
+import geopandas as gpd
+from rasterstats import zonal_stats 
+```      
+
+```{python}
+import dask.distributed
+client = dask.distributed.Client()
+odc.stac.configure_rio(cloud_defaults=True, client=client)
 ```
 
 
@@ -81,7 +90,7 @@ items = (
     bbox = box,
     datetime = "2022-06-01/2022-08-01",
     query={"eo:cloud_cover": {"lt": 20}}).
-  get_all_items()
+  item_collection()
 )
 
 ```
@@ -190,6 +199,9 @@ cmap.set_bad(color='black')
 ndvi.plot.imshow(row="time", cmap=cmap, add_colorbar=False, size=5)
 ```
 
+
+
+
 :::
 
 # From NDVI to Environmental Justice
@@ -202,6 +214,10 @@ We examine the present-day impact of historic "red-lining" of US cities during t
 In addition to large scale raster data such as satellite imagery, the analysis of vector shapes such as polygons showing administrative regions is a central component of spatial analysis, and particularly important to spatial social sciences. The red-lined areas of the 1930s are one example of spatial vectors. One common operation is to summarise the values of all pixels falling within a given polygon, e.g. computing the average greenness (NDVI) 
 
 
+::: {.panel-tabset}
+
+## R
+
 ```{r}
 #| message = FALSE, results="hide"
 sf <- st_read("/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson") |>
@@ -211,7 +227,25 @@ sf$NDVI <- poly$NDVI
 ```
 
 
+## Python
+
+```{python}
+ndvi.rio.to_raster(raster_path="ndvi.tif", driver="COG")
+sf_url = "/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
+mean_ndvi = zonal_stats(sf_url, "ndvi.tif", stats="mean")
+
+```
+
+
+:::
+
+
 We plot the underlying NDVI as well as the average NDVI of each polygon, along with it's textual grade, using `tmap`.  Note that "A" grades tend to be darkest green (high NDVI) while "D" grades are frequently the least green.  (Regions not zoned for housing at the time of the 1937 housing assessment are not displayed as polygons.)
+
+
+::: {.panel-tabset}
+
+## R
 
 ```{r}
 #| message = FALSE, warning = FALSE
@@ -221,8 +255,22 @@ tm_shape(ndvi_stars) + tm_raster(col.scale = mako) +
   tm_legend_hide()
 ```
 
+## Python
+
+```{python}
+sf = gpd.read_file(sf_url)
+sf["ndvi"] = [x["mean"] for x in mean_ndvi ]
+sf.plot(column="ndvi", legend=True)
+```
+
+:::
 
 Are historically redlined areas still less green?
+
+
+::: {.panel-tabset}
+
+## R
 
 ```{r}
 sf |> 
@@ -232,4 +280,20 @@ sf |>
             sd = sd(NDVI)) |>
   knitr::kable()
 ```
+
+## Python
+
+```{python}
+import geopolars as gpl
+import polars as pl
+
+(gpl.
+  from_geopandas(sf).
+  group_by("holc_grade").
+  agg(pl.col("ndvi").mean()).
+  sort("holc_grade")
+)
+```
+
+:::
 
