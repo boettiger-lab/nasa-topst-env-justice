@@ -10,12 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Login to GitHub Container Registry
+        if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
       - name: Build the Docker image
+        if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
         run: docker build .devcontainer --tag ghcr.io/boettiger-lab/nasa-tops:latest
       - name: Publish
+        if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
         run: docker push ghcr.io/boettiger-lab/nasa-tops:latest
