@@ -17,4 +17,4 @@ COPY install.R install.R
 RUN Rscript install.R
 
 # some teaching preferences
-RUN git --system config pull.rebase false
+RUN git config --global pull.rebase false
