@@ -9,7 +9,7 @@ ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/c1a472465532c
 RUN bash install_python.sh && rm install_python.sh
 
 
-RUN apt-get update && apt-get -y install libxt6
+RUN apt-get update && apt-get -y install libxt6 libzmq3-dev
 ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/master/scripts/experimental/install_dev_osgeo.sh install_dev_osgeo.sh
 RUN bash install_dev_osgeo.sh && rm install_dev_osgeo.sh
 
