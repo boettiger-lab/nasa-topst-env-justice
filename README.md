@@ -7,7 +7,10 @@
 
 This is the development repository of educational training materials we are building as part of the [NASA TOPS-T](https://nspires.nasaprs.com/external/solicitations/summary.do?solId=%7BAB776446-03A8-4C24-845D-2E5A2ADA2D5A%7D&path=&method=init) program. A copy of the funded grant proposal to NASA describing this project can be found on Zenodo under [DOI:10.5281/zenodo.8240012](https://doi.org/10.5281/zenodo.8240012). This was one of [16 successfully funded proposals](https://nspires.nasaprs.com/external/viewrepositorydocument/cmdocumentid=929821/solicitationId=%7BAB776446-03A8-4C24-845D-2E5A2ADA2D5A%7D/viewSolicitationDocument=1/TOPST22%20selections.pdf) under the program.  
 
-## Quickstart [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
+## Quickstart 
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
 Click _Open in GitHub Codespaces_ to try out this repository in a GitHub-hosted cloud instance.  This instance provides both VSCode or RStudio environments with most necessary packages already installed.  This environment can also be accessed in a local VSCode as a [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) or as a [Docker image](https://github.com/boettiger-lab/nasa-topst-env-justice/pkgs/container/nasa-tops).
 
