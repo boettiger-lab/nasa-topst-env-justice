@@ -4,14 +4,14 @@ format: html
 ---
 
 
-# Portable Reproducibility
+## Portable Reproducibility
 
-Noam Ross says that good reproducibility is like an onion -- it comes
+Good reproducibility is like an onion -- it comes
 in many layers.  There's a purpose to containerized environments deployed on
 cloud-hosted virtual machines.  And we believe students should be able to leverage
 those things, easily and rapidly deploying cloud-hosted images, and will get
-to that here. But most of the time, we just want
-to copy-paste a few lines of code and expect it to work. Many layers lie between
+to that here. But most of the time, we just want to copy-paste a few lines of code
+and expect it to work. Many layers of the onion can be found between
 these two extremes -- from package dependencies and system dependencies to
 containers, orchestration, metadata, even hardware requirements.  
 
@@ -30,7 +30,7 @@ running up on Microsoft Azure cloud.
 
 By clicking the "Open in GitHub Codespaces" button on the README in GitHub, users
 will be placed into a free cloud-based virtual machine running a VSCode editor
-in their web browser.  
+in their web browser.
 This includes specific versions of R and python packages, the 
 latest releases of the OSGeo C libraries GDAL, PROJ, and GEOS that power
 many spatial operations in both languages.  These elements are pre-compiled
@@ -38,10 +38,12 @@ in a Docker container based on the latest Ubuntu LTS release (22.04 at
 the time of writing), which itself is build according to the [Dockerfile](https://github.com/boettiger-lab/nasa-topst-env-justice/blob/main/.devcontainer/Dockerfile) 
 found in this repository using [a GitHub Action](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml).
 The [devcontainer.json configuration](https://github.com/boettiger-lab/nasa-topst-env-justice/blob/main/.devcontainer/devcontainer.json) will also set 
-up relevant VSCode extensions for working with python and R, including 
-interactivity for both Jupyter and Quarto notebooks.  Additionally, it will
-provide access to an RStudio Server environment on an embedded port for users
+up relevant VSCode extensions for both both Jupyter and Quarto notebooks, with each supporting both R and Python.  
+
+Additionally, this will provide access to an RStudio Server environment on an embedded port for users
 who prefer that editor to VSCode.
+
+
 
 ## Locally: VSCode
 
