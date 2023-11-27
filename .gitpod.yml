@@ -1,1 +1,5 @@
 image:  ghcr.io/boettiger-lab/nasa-tops:latest
+tasks:
+    - init: bash ./.gitpod-setup.sh
+    - before: bash .devcontainer/setup.sh
+
