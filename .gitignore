@@ -134,5 +134,5 @@ cython_debug/
 *.tif
 /.quarto/
 .Rhistory
-
 *_files/libs/*
+docs

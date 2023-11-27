@@ -36,7 +36,7 @@
 			]
 		}
 	  },
-	  // Forward Jupyter and RStudio ports
+	  // Forward the RStudio ports
 	  "forwardPorts": [8787],
 	  "portsAttributes": {
 		"8787": {
@@ -45,7 +45,6 @@
 			"onAutoForward": "ignore"
 		}
 	  },
-	  "updateContentCommand": "python3 -m pip install -r requirements.txt",		  
 	  // Use 'postCreateCommand' to run commands after the container is created.
 	  "postCreateCommand": "bash .devcontainer/setup.sh",
 	  "postAttachCommand": "sudo rstudio-server start &> /dev/null && bash .devcontainer/welcome.sh",
