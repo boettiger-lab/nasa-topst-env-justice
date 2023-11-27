@@ -8,7 +8,7 @@ RUN bash install_dev_osgeo.sh && rm install_dev_osgeo.sh
 
 USER rstudio
 WORKDIR /home/rstudio
-RUN chsh -s /usr/bin/bash
+RUN usermod -s /bin/bash rstudio
 
 COPY requirements.txt requirements.txt
 ENV PATH=$PATH:/home/rstudio/.local/bin
