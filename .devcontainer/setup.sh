@@ -2,7 +2,7 @@
 
 sudo cp /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
 sudo sudo bash -c 'echo "USER=rstudio" >>/etc/environment'
-sudo /init &
+sudo /init &> /dev/null &
 
 ## set startup dir
 mkdir -p ~/.local/share/rstudio/projects_settings
