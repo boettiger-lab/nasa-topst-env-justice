@@ -30,8 +30,18 @@ running up on Microsoft Azure cloud.
 
 By clicking the "Open in GitHub Codespaces" button on the README in GitHub, users
 will be placed into a free cloud-based virtual machine running a VSCode editor
-in their web browser.
-This includes specific versions of R and python packages, the 
+in their web browser. The first setup can take a few minutes to complete.
+
+Additionally, this also provides access to an RStudio environment on an embedded port for users
+who prefer that editor to VSCode. Once the Codespace has fully completed loading, it 
+will include a link in a second welcome message in the Terminal to access RStudio like so:
+
+![](img/vscode-welcome.png)
+
+The RStudio link can also always be accessed from the Ports tab under the port labeled "Rstudio" (8787).
+
+Both the VSCode and RStudion editors run in the same underlying custom Docker container, which
+includes specific versions of R and python packages, the 
 latest releases of the OSGeo C libraries GDAL, PROJ, and GEOS that power
 many spatial operations in both languages.  These elements are pre-compiled
 in a Docker container based on the latest Ubuntu LTS release (22.04 at
@@ -39,10 +49,6 @@ the time of writing), which itself is build according to the [Dockerfile](https:
 found in this repository using [a GitHub Action](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml).
 The [devcontainer.json configuration](https://github.com/boettiger-lab/nasa-topst-env-justice/blob/main/.devcontainer/devcontainer.json) will also set 
 up relevant VSCode extensions for both both Jupyter and Quarto notebooks, with each supporting both R and Python.  
-
-Additionally, this will provide access to an RStudio Server environment on an embedded port for users
-who prefer that editor to VSCode.
-
 
 
 ## Locally: VSCode
