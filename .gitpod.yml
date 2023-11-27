@@ -1,6 +1,4 @@
 image:  ghcr.io/boettiger-lab/nasa-tops:latest
 tasks:
     - name: rstudio-init
-      init: bash .gitpod-setup.sh
-    - name: resume
-      command: bash .gitpod-resume.sh
+      command: bash .gitpod-setup.sh
