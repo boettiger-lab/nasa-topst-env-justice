@@ -1,0 +1,8 @@
+image:  ghcr.io/boettiger-lab/nasa-tops:latest
+tasks:
+    - name: rstudio-init
+      init: bash .devcontainer/setup.sh
+    - name: setup
+      init: bash .gitpod-setup.sh
+    - name: rstudio-server
+      init: sudo rstudio-server start
