@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../contents/earthdata.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -246,13 +247,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Good reproducibility is like an onion – it comes in many layers. There’s a purpose to containerized environments deployed on cloud-hosted virtual machines. And we believe students should be able to leverage those things, easily and rapidly deploying cloud-hosted images, and will get to that here. But most of the time, we just want to copy-paste a few lines of code and expect it to work. Many layers of the onion can be found between these two extremes – from package dependencies and system dependencies to containers, orchestration, metadata, even hardware requirements.</p>
 <p>In the examples here, copy-pasting the code blocks into your preferred environment should work in most cases. Sometimes it may be necessary to install specific libraries or specific versions of those libraries. And for fastest setup and maximum reproducibility, users can deploy the fully containerized environment. It should be as easy as possible to grab the whole onion and take it where you want it – be that a local VSCode editor on your laptop, or an RStudio Server instance running up on Microsoft Azure cloud.</p>
 </section>
+<section id="notebooks-on-github" class="level2">
+<h2 class="anchored" data-anchor-id="notebooks-on-github">Notebooks on GitHub</h2>
+<p>Each of the recipes on this site correspond to a Quarto or Jupyter notebook in a GitHub repository (see <code>contents/</code> directory or footer links). Such notebooks form the basis of technical documentation and publishing to a wide array of formats. A <code>_quarto.yml</code> configuration file in the repository root determines the <a href="https://quarto.org/docs/websites/">website layout</a>. Notebooks can be run interactively in any appropriate environment (RStudio, JupyterLab, VSCode, etc, see below for free online platforms). Type <code>quarto render</code> from the bash command line or use <code>quarto::quarto_preview()</code> from the R console to preview the entire site.</p>
+</section>
+<section id="a-portable-compute-environment" class="level2">
+<h2 class="anchored" data-anchor-id="a-portable-compute-environment">A Portable compute environment</h2>
+</section>
 <section id="on-the-cloud-gitpod-or-codespaces" class="level2">
 <h2 class="anchored" data-anchor-id="on-the-cloud-gitpod-or-codespaces">On the cloud: Gitpod or Codespaces</h2>
 <p><a href="https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice"><img src="https://gitpod.io/button/open-in-gitpod.svg" class="img-fluid" alt="Open in Gitpod"></a> <a href="https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1"><img src="https://github.com/codespaces/badge.svg" class="img-fluid" alt="Open in GitHub Codespaces"></a></p>
 <p>Both <a href="https://github.com/codespaces">GitHub Codespaces</a> and <a href="https://gitpod.io/about">Gitpod</a> provide a fast and simple way to enter into integrated development environments such as VSCode, RStudio, or JupyterLab on free, cloud-based virtual machines. Codespaces has a free tier of 60 hours/month, Gitpod of 50 hours a month, both offer paid plans for additional use and larger compute instances. Small codespace instances are also <a href="https://docs.github.com/en/education/manage-coursework-with-github-classroom/integrate-github-classroom-with-an-ide/using-github-codespaces-with-github-classroom">free to instructors</a></p>
 <p>By clicking on one of the buttons in GitHub, users will be placed into a free cloud-based virtual machine running a VSCode editor in their web browser. The first setup can take a few minutes to complete.</p>
 <p>Additionally, this also provides access to an RStudio environment on an embedded port for users who prefer that editor to VSCode. Once the Codespace has fully completed loading, it will include a link in a second welcome message in the Terminal to access RStudio like so:</p>
-<p><img align="right" src="mg/vscode-welcome.png" width="250"></p>
+<p><img align="right" src="img/vscode-welcome.png" width="500"></p>
 <p>The RStudio link can also always be accessed from the Ports tab under the port labeled “Rstudio” (8787). (Gitpod will show a pop-up message to open this port instead.)</p>
 <p>Both Codespaces and Gitpod can be configured with custom compute environments by supplying a docker image. Both the VSCode and RStudio editors run in the same underlying custom Docker container. This repository includes a Dockerfile defining this compute environment which includes specific versions of R and python packages, the latest releases of the OSGeo C libraries GDAL, PROJ, and GEOS that power many spatial operations in both languages. These elements are pre-compiled in a Docker container based on the latest Ubuntu LTS release (22.04 at the time of writing), which itself is build according to the <a href="https://github.com/boettiger-lab/nasa-topst-env-justice/blob/main/.devcontainer/Dockerfile">Dockerfile</a> found in this repository using <a href="https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml">a GitHub Action</a>. The <a href="https://github.com/boettiger-lab/nasa-topst-env-justice/blob/main/.devcontainer/devcontainer.json">devcontainer.json configuration</a> will also set up relevant VSCode extensions for both both Jupyter and Quarto notebooks, with each supporting both R and Python.</p>
 </section>
@@ -508,6 +516,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../contents/earthdata.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">NASA EarthData</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -516,7 +533,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    </div>
+    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/edit/main/contents/computing-environment.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">

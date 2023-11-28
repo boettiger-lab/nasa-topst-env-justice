@@ -42,6 +42,20 @@
     "text": "Good reproducibility is like an onion – it comes in many layers. There’s a purpose to containerized environments deployed on cloud-hosted virtual machines. And we believe students should be able to leverage those things, easily and rapidly deploying cloud-hosted images, and will get to that here. But most of the time, we just want to copy-paste a few lines of code and expect it to work. Many layers of the onion can be found between these two extremes – from package dependencies and system dependencies to containers, orchestration, metadata, even hardware requirements.\nIn the examples here, copy-pasting the code blocks into your preferred environment should work in most cases. Sometimes it may be necessary to install specific libraries or specific versions of those libraries. And for fastest setup and maximum reproducibility, users can deploy the fully containerized environment. It should be as easy as possible to grab the whole onion and take it where you want it – be that a local VSCode editor on your laptop, or an RStudio Server instance running up on Microsoft Azure cloud."
   },
   {
+    "objectID": "contents/computing-environment.html#notebooks-on-github",
+    "href": "contents/computing-environment.html#notebooks-on-github",
+    "title": "Computing Environments",
+    "section": "Notebooks on GitHub",
+    "text": "Notebooks on GitHub\nEach of the recipes on this site correspond to a Quarto or Jupyter notebook in a GitHub repository (see contents/ directory or footer links). Such notebooks form the basis of technical documentation and publishing to a wide array of formats. A _quarto.yml configuration file in the repository root determines the website layout. Notebooks can be run interactively in any appropriate environment (RStudio, JupyterLab, VSCode, etc, see below for free online platforms). Type quarto render from the bash command line or use quarto::quarto_preview() from the R console to preview the entire site."
+  },
+  {
+    "objectID": "contents/computing-environment.html#a-portable-compute-environment",
+    "href": "contents/computing-environment.html#a-portable-compute-environment",
+    "title": "Computing Environments",
+    "section": "A Portable compute environment",
+    "text": "A Portable compute environment"
+  },
+  {
     "objectID": "contents/computing-environment.html#on-the-cloud-gitpod-or-codespaces",
     "href": "contents/computing-environment.html#on-the-cloud-gitpod-or-codespaces",
     "title": "Computing Environments",
