@@ -23,6 +23,23 @@ It should be as easy as possible to grab the whole onion and take it where you w
 be that a local VSCode editor on your laptop, or an RStudio Server instance 
 running up on Microsoft Azure cloud.  
 
+
+## Notebooks on GitHub
+
+Each of the recipes on this site correspond to a Quarto or Jupyter notebook in a
+GitHub repository (see `contents/` directory or footer links).  Such notebooks form the
+basis of technical documentation and publishing to a wide array of formats.
+A `_quarto.yml` configuration file in the repository root determines the [website layout](https://quarto.org/docs/websites/).
+Notebooks can be run interactively in any appropriate environment 
+(RStudio, JupyterLab, VSCode, etc, see below for free online platforms).
+Type `quarto render` from the bash command line or use `quarto::quarto_preview()`
+from the R console to preview the entire site.  
+
+## A Portable compute environment
+
+
+
+
 ## On the cloud: Gitpod or Codespaces
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice)
@@ -42,7 +59,7 @@ Additionally, this also provides access to an RStudio environment on an embedded
 who prefer that editor to VSCode. Once the Codespace has fully completed loading, it 
 will include a link in a second welcome message in the Terminal to access RStudio like so:
 
-<img align="right" src="mg/vscode-welcome.png" width="250">
+<img align="right" src="img/vscode-welcome.png" width="500">
 
 The RStudio link can also always be accessed from the Ports tab under the port labeled "Rstudio" (8787).
 (Gitpod will show a pop-up message to open this port instead.)

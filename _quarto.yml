@@ -9,12 +9,9 @@ execute:
   freeze: auto
 
 website:
-  page-footer:
-    right: 
-      - icon: github
-        href: https://github.com/boettiger-lab/nasa-topst-env-justice
-      - icon: globe-americas 
-        href: https://carlboettiger.info  
+  repo-url: https://github.com/boettiger-lab/nasa-topst-env-justice
+  repo-actions: [edit, issue]
+  page-navigation: true
   sidebar:
     style: "docked"
     search: true
@@ -48,5 +45,11 @@ website:
         contents:
           - text: Portable Environments
             href: contents/computing-environment.qmd
+  page-footer:
+    right: 
+      - icon: github
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice
+      - icon: globe-americas 
+        href: https://carlboettiger.info  
 
           
