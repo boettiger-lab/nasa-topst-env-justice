@@ -23,12 +23,18 @@ It should be as easy as possible to grab the whole onion and take it where you w
 be that a local VSCode editor on your laptop, or an RStudio Server instance 
 running up on Microsoft Azure cloud.  
 
-## On the cloud: Codespaces
+## On the cloud: Gitpod or Codespaces
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
+Both [GitHub Codespaces](https://github.com/codespaces) and [Gitpod](https://gitpod.io/about) provide
+a fast and simple way to enter into integrated development environments such as VSCode, RStudio, or JupyterLab
+on free, cloud-based virtual machines. Codespaces has a free tier of 60 hours/month, Gitpod of 50 hours a month,
+both offer paid plans for additional use and larger compute instances. Small codespace instances are also [free to instructors](https://docs.github.com/en/education/manage-coursework-with-github-classroom/integrate-github-classroom-with-an-ide/using-github-codespaces-with-github-classroom)
 
-By clicking the "Open in GitHub Codespaces" button on the README in GitHub, users
+
+By clicking on one of the buttons in GitHub, users
 will be placed into a free cloud-based virtual machine running a VSCode editor
 in their web browser. The first setup can take a few minutes to complete.
 
@@ -36,11 +42,14 @@ Additionally, this also provides access to an RStudio environment on an embedded
 who prefer that editor to VSCode. Once the Codespace has fully completed loading, it 
 will include a link in a second welcome message in the Terminal to access RStudio like so:
 
-![](img/vscode-welcome.png)
+<img align="right" src="mg/vscode-welcome.png" width="250">
 
 The RStudio link can also always be accessed from the Ports tab under the port labeled "Rstudio" (8787).
+(Gitpod will show a pop-up message to open this port instead.)
 
-Both the VSCode and RStudion editors run in the same underlying custom Docker container, which
+Both Codespaces and Gitpod can be configured with custom compute environments by supplying a docker image.
+Both the VSCode and RStudio editors run in the same underlying custom Docker container.
+This repository includes a Dockerfile defining this compute environment which
 includes specific versions of R and python packages, the 
 latest releases of the OSGeo C libraries GDAL, PROJ, and GEOS that power
 many spatial operations in both languages.  These elements are pre-compiled
