@@ -1,4 +1,13 @@
+
 image:  ghcr.io/boettiger-lab/nasa-tops:latest
 tasks:
     - name: rstudio-init
       command: bash .gitpod-setup.sh
+
+vscode:
+  extensions:
+    - quarto.quarto
+    - ms-toolsai.jupyter
+    - REditorSupport.r
+    - ms-python.python
+    - ms-toolsai.jupyter-renderers
