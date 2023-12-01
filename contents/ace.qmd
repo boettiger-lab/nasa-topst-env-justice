@@ -1,0 +1,100 @@
+---
+
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+```{r message=FALSE}
+library(stars)
+library(rstac)
+library(gdalcubes)
+library(tmap)
+library(dplyr)
+tmap_mode("plot")
+
+gdalcubes::gdalcubes_options(parallel=24*2)
+```
+
+CDFW makes the [ACE GIS Data](https://wildlife.ca.gov/Data/Analysis/Ace) freely available, but in one large zip archive.
+
+Here I'll use a public mirror on a Berkeley-based server for a more cloud-native access pattern so we don't have to download the whole thing.  We also index this in a simple [stac catalog](https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/collections/cdfw_ace/summary.json?.asset=asset-ds2715)
+
+
+```{r}
+url <- "/vsicurl/https://minio.carlboettiger.info/public-biodiversity/ACE_summary/ds2715.gdb"
+```
+
+CDFW uses hexes!  Note that these pre-date the modern [H3 hex tiling system](https://h3geo.org/), so do not provide the magic of [hierarchical (zoom level) tiles](https://h3geo.org/docs/highlights/indexing)
+
+```{r}
+hexes <- st_read(url) 
+tm_shape(hexes) + tm_polygons(fill = "RwiRankEco", col=NA)
+```
+
+Find Biodiversity Intactness Index COG tiles from Planetary Computer using STAC search:
+
+```{r}
+box <- st_bbox(st_transform(hexes, 4326))
+items <-
+  stac("https://planetarycomputer.microsoft.com/api/stac/v1") |>
+  stac_search(collections = "io-biodiversity",
+              bbox = c(box),
+              limit = 1000) |>
+  post_request() |>
+  items_sign(sign_fn = sign_planetary_computer())
+
+```
+
+Created a desired cube view (Note, for simplicitly I show this at a much coarser resolution than the native data, allowing the gdalwarper to aggregate so this will run much faster)
+
+```{r}
+cube <- gdalcubes::stac_image_collection(items$features, asset_names = "data")
+v <- cube_view(srs = "EPSG:4326",
+               extent = list(t0 = "2020-01-01", t1 = "2020-12-31",
+                             left = box[1], right = box[3],
+                             top = box[4], bottom = box[2]),
+               nx = 1000, ny=1000, dt = "P1Y")
+
+Q <- raster_cube(cube,v)
+```
+
+Quick plot of the data at requested cube resolution.  
+
+```{r}
+Q |> plot(col=viridisLite::viridis(10))
+```
+
+Extract mean value of the BII for each hex.
+
+```{r}
+bii_hexes <- Q |> gdalcubes::extract_geom(hexes, FUN=mean)
+```
+
+
+Plot
+
+```{r}
+bii_hexes <- hexes |>
+  tibble::rowid_to_column("FID") |> 
+  left_join(bii_hexes)
+
+tm_shape(bii_hexes) + tm_polygons(fill = "data", col=NA)
+```
+
+```{r}
+tmap_mode("plot")
+sf = st_bbox(c(xmin=-123, ymin=39, xmax=-122, ymax=37.5), crs=4326)
+tm_shape(bii_hexes, bbox = sf) + tm_polygons(fill = "data", col=NA)
+
+```
+
+
+## Leaflet map
+
+```{r}
+tmap_mode("view")
+tm_shape(bii_hexes) + tm_polygons(fill = "data", col=NA)
+```
+
