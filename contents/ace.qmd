@@ -136,13 +136,14 @@ We can also render an interactive leaflet plot where we can zoom in and out and 
 
 ```{r results = "asis"}
 tmap_mode("view")
-
+bii <- Q |> st_as_stars()
 map <- 
   tm_shape(bii) +
-  tm_polygons(fill = "data", col=NA, fill.scale = viridis) +
+  tm_raster(col.scale = viridis) +
   tm_shape(ace) +
   tm_polygons(fill = "RwiRankEco", col=NA)
-tmap::tmap_save(map, "bii_hexes.html")
+
+tmap_save(map, "bii_hexes.html")
 ```
 
 
