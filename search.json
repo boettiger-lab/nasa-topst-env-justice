@@ -46,7 +46,7 @@
     "href": "contents/ace.html#leaflet-map",
     "title": "ACE Data",
     "section": "Leaflet map",
-    "text": "Leaflet map\nWe can also render an interactive leaflet plot where we can zoom in and out and toggle basemaps:\ntmap_mode(\"view\")\n\nmap &lt;- \n  tm_shape(bii) +\n  tm_polygons(fill = \"data\", col=NA, fill.scale = viridis) +\n  tm_shape(ace) +\n  tm_polygons(fill = \"RwiRankEco\", col=NA)\ntmap::tmap_save(map, \"bii_hexes.html\")\ninteractive map"
+    "text": "Leaflet map\nWe can also render an interactive leaflet plot where we can zoom in and out and toggle basemaps:\ntmap_mode(\"view\")\nbii &lt;- Q |&gt; st_as_stars()\nmap &lt;- \n  tm_shape(bii) +\n  tm_raster(col.scale = viridis) +\n  tm_shape(ace) +\n  tm_polygons(fill = \"RwiRankEco\", col=NA)\n\ntmap_save(map, \"bii_hexes.html\")\ninteractive map"
   },
   {
     "objectID": "contents/computing-environment.html",
