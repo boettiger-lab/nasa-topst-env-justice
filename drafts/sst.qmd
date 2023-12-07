@@ -1,0 +1,149 @@
+
+```{r setup}
+library(earthdatalogin)
+library(rstac)
+library(tidyverse)
+library(stars)
+```
+
+
+```{r}
+turtles <- 
+  read_csv("https://raw.githubusercontent.com/nmfs-opensci/NOAAHackDays-2024/main/r-tutorials/data/occ_all.csv") |> 
+  st_as_sf(coords = c("decimalLongitude", "decimalLatitude"))
+
+st_crs(turtles) <- 4326
+dates <- turtles |> distinct(date) |> pull(date)
+
+```
+
+```{r}
+library(tmap)
+tmap_mode("plot")
+data(World)
+tm_shape(World) + tm_borders() + 
+  tm_shape(turtles) + tm_dots()
+```
+
+
+```{r}
+start =  min(turtles$date) # "2018-01-01" #
+end =  max(turtles$date) # "2018-12-31"   #
+items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
+  stac_search(collections = "MUR-JPL-L4-GLOB-v4.1",
+              bbox = c(st_bbox(turtles)),
+              datetime = paste(start,end, sep = "/")) |>
+  post_request() |>
+  items_fetch()
+```
+
+
+
+```{r}
+stac_dates <- rstac::items_datetime(items) |> as.Date()
+matched <- items[ stac_dates %in% dates ]
+
+```
+
+
+
+```{r}
+library(stars)
+
+feature <- matched$
+
+for(feature in matched$features) {
+  url <- feature$assets$data$href
+  ex <- read_stars(paste0("/vsicurl/", url), "analysed_sst")
+  turtle_temp <- st_extract(ex, turtles)
+}
+```
+
+
+```{r}
+library(gdalcubes)
+gdalcubes_set_gdal_config("GDAL_NUM_THREADS", "ALL_CPUS")
+gdalcubes_options(parallel = TRUE)
+```
+
+
+Unfortunately, NASA's netcdf files lack some typical metadata regarding projection and extent (bounding box) of the data.  Some tools are happy to ignore this, just assuming a regular grid, but because GDAL supports explicitly spatial extraction, it wants to know this information.  Nor is this information even provided in the STAC entries! Oh well -- here we provide it rather manually using GDAL's "virtual dataset" prefix-suffix syntax (e.g. note the `a_srs=OGC:CRS84`), so that GDAL does not complain that the CRS (coordinate reference system) is missing.  Additional metadata such as the timestamp for each image is always included in a STAC entry and so can be automatically extracted by `stac_image_collection`.  
+
+```{r}
+vrt <- function(url) {
+  prefix <-  "vrt://NETCDF:/vsicurl/"
+  suffix <- ":analysed_sst?a_srs=OGC:CRS84&a_ullr=-180,90,180,-90"
+  paste0(prefix, url, suffix)
+}
+```
+
+```{r}
+col <- stac_image_collection(items$features,
+                             asset_names = "data",
+                             url_fun = vrt)
+```
+
+Access to NASA's EarthData collection requires an authentication token.
+The `earthdatalogin` package exists only to handle this!  
+Unlike `sf`, `terra` etc, the way `gdalcubes` calls `gdal` 
+does not inherit global environmental variables, so 
+we set the variables it uses with it's own configuration utility:
+  
+```{r}
+header <- edl_set_token(format="header", set_env_var = FALSE)
+gdalcubes_set_gdal_config("GDAL_HTTP_HEADERS", header)
+```
+
+
+A classic workflow will often work through file-by-file (or even pixel by pixel).
+However, good, user friendly computing interfaces often provide higher-level abstractions.
+As a user, we don't particularly care about the details of how the data is sliced into
+individual files, but we do want a workflow that does not download more bytes than we need.
+
+In this case, these sea-surface-temperatures where each file covers the full earth surface but are organized into 1 netcdf file for each day of the year.  In contrast, most satellite imagery products may have many different images that must be tiled together into a mosaic to cover the whole earth.  Different data products will also be computed at different spatial resolutions -- is a pixel 100m or 50cm? -- and expressed in different spatial projections.  A workflow will typically need to crop or subset each data layer, and potentially also transform it to a common projection and common resolution.
+
+To facilitate this, `gdalcubes` defines the concept of a `cube_view`: a specification of the projection, extent, and resolution desired.  These may or may not match the projection, extent, or resolution of the data -- the `gdalwarp` utility can efficiently handle these transformations on accessing each remote resource.  In our case, we will use the same projection (`ESPG:4326`, lat/long), and the same resolution (0.01 degree resolution in space, daily resolution in time), but we will crop the spatial extent to a specific location.
+
+```{r}
+box <- st_bbox(turtles)
+
+v = cube_view(srs = "EPSG:4326",
+              extent = list(t0 = as.character(start), 
+                            t1 = as.character(end),
+                            left = box[1], right = box[3],
+                            bottom = box[2], top =box[4]),
+              dx = .01, dy = 0.01, dt = "P1D")
+```
+
+We can then apply our view to the image collection to create our data cube.
+
+```{r}
+data_cube <- raster_cube(col, v)  
+```
+
+```{r}
+turtles_small <- turtles |> filter(date > start, date < end)
+```
+
+
+```{r}
+bench::bench_time({
+turtle_extract <- data_cube |> 
+  extract_geom(turtles_small, time_column = "date")
+})
+```
+
+
+
+
+```{r}
+turtle_temp <- turtles_small |> 
+  tibble::rowid_to_column("FID") |>
+  inner_join(turtle_extract)
+
+pal <- tmap::tm_scale_continuous(5, values="hcl.blue_red")
+tm_basemap("CartoDB.DarkMatter") +
+  tm_shape(turtle_temp) + 
+  tm_dots("data", fill.scale = pal)+     
+  tm_legend_hide()
+```
