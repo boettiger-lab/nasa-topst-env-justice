@@ -27,6 +27,7 @@ tm_shape(World) + tm_borders() +
 
 
 ```{r}
+bench::bench_time({
 start =  min(turtles$date) # "2018-01-01" #
 end =  max(turtles$date) # "2018-12-31"   #
 items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
@@ -35,28 +36,33 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
               datetime = paste(start,end, sep = "/")) |>
   post_request() |>
   items_fetch()
+})
 ```
 
 
 
 ```{r}
 stac_dates <- rstac::items_datetime(items) |> as.Date()
-matched <- items[ stac_dates %in% dates ]
+matched <- items$features[ stac_dates %in% dates ]
 
 ```
 
 
 
 ```{r}
-library(stars)
+earthdatalogin::edl_set_token()
 
-feature <- matched$
+urls <- map_chr(matched, list("assets", "data", "href"))
 
-for(feature in matched$features) {
-  url <- feature$assets$data$href
-  ex <- read_stars(paste0("/vsicurl/", url), "analysed_sst")
-  turtle_temp <- st_extract(ex, turtles)
-}
+# smaller test set:
+urls <- urls[1:100]
+ex <- read_stars(paste0("/vsicurl/", urls), "analysed_sst", quiet=TRUE)
+st_crs(ex) <- 4326
+turtle_temp <- st_extract(ex, turtle)
+```
+
+```{r}
+image_collection(urls)
 ```
 
 
