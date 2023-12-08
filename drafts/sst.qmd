@@ -4,6 +4,11 @@ library(earthdatalogin)
 library(rstac)
 library(tidyverse)
 library(stars)
+library(tmap)
+
+
+earthdatalogin::edl_set_token()
+
 ```
 
 
@@ -17,12 +22,11 @@ dates <- turtles |> distinct(date) |> pull(date)
 
 ```
 
+
 ```{r}
-library(tmap)
-tmap_mode("plot")
-data(World)
-tm_shape(World) + tm_borders() + 
-  tm_shape(turtles) + tm_dots()
+# Quick plot of the turtle data
+tm_basemap("CartoDB.DarkMatter") + 
+  tm_shape(turtles) + tm_dots("sst")
 ```
 
 
@@ -34,59 +38,68 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
   stac_search(collections = "MUR-JPL-L4-GLOB-v4.1",
               bbox = c(st_bbox(turtles)),
               datetime = paste(start,end, sep = "/")) |>
-  post_request() |>
+  get_request() |>
   items_fetch()
 })
 ```
 
 
+```{r}
+# potentially faster but not general
+source(system.file("examples/search.R",package="earthdatalogin"))
+# max search of 2000 results
+resp <- edl_search(short_name = "MUR-JPL-L4-GLOB-v4.1",
+                   temporal = c("2004-01-01", "2021-12-31"))
+
+urls <- edl_extract_urls(resp)
+
+# Only those dates that are found in turtles data please
+all_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
+stopifnot(length(all_dates) == length(urls))
+urls <- urls[ all_dates %in% dates ]
+
+```
+
+We only want assets matching dates in our data, not all days in the full range.
 
 ```{r}
+# Only those dates that are found in turtles data please
 stac_dates <- rstac::items_datetime(items) |> as.Date()
 matched <- items$features[ stac_dates %in% dates ]
-
-```
-
-
-
-```{r}
-earthdatalogin::edl_set_token()
-
 urls <- map_chr(matched, list("assets", "data", "href"))
-
-# smaller test set:
-urls <- urls[1:100]
-ex <- read_stars(paste0("/vsicurl/", urls), "analysed_sst", quiet=TRUE)
-st_crs(ex) <- 4326
-turtle_temp <- st_extract(ex, turtle)
 ```
+
+
+
+
+This approach works on a subset of URLs,  unfortunately stars is not particularly robust at reading in large numbers of URLs
+
 
 ```{r}
-image_collection(urls)
+some_urls <- urls[1:20]
+some_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", some_urls), format="%Y%m%d")
+# If we test with a subset of urls, we need to test with a subset of turtles too!
+mini_turtle <- turtles |> filter(date %in% some_dates)
+
+bench::bench_time({ # 1.02 min for 20 urls
+  sst <- read_stars(paste0("/vsicurl/", some_urls), "analysed_sst", quiet=TRUE)
+  st_crs(sst) <- 4326  # Christ, someone omitted CRS from metadata
+  # before we can extract on dates, we need to populate this date information
+  sst <- st_set_dimensions(sst, "time", values = some_dates)
+})
+
+bench::bench_time({
+  turtle_temp <- st_extract(sst, mini_turtle, time_column = "date")
+})
 ```
 
+
+## gdalcubes
 
 ```{r}
 library(gdalcubes)
 gdalcubes_set_gdal_config("GDAL_NUM_THREADS", "ALL_CPUS")
 gdalcubes_options(parallel = TRUE)
-```
-
-
-Unfortunately, NASA's netcdf files lack some typical metadata regarding projection and extent (bounding box) of the data.  Some tools are happy to ignore this, just assuming a regular grid, but because GDAL supports explicitly spatial extraction, it wants to know this information.  Nor is this information even provided in the STAC entries! Oh well -- here we provide it rather manually using GDAL's "virtual dataset" prefix-suffix syntax (e.g. note the `a_srs=OGC:CRS84`), so that GDAL does not complain that the CRS (coordinate reference system) is missing.  Additional metadata such as the timestamp for each image is always included in a STAC entry and so can be automatically extracted by `stac_image_collection`.  
-
-```{r}
-vrt <- function(url) {
-  prefix <-  "vrt://NETCDF:/vsicurl/"
-  suffix <- ":analysed_sst?a_srs=OGC:CRS84&a_ullr=-180,90,180,-90"
-  paste0(prefix, url, suffix)
-}
-```
-
-```{r}
-col <- stac_image_collection(items$features,
-                             asset_names = "data",
-                             url_fun = vrt)
 ```
 
 Access to NASA's EarthData collection requires an authentication token.
@@ -96,60 +109,57 @@ does not inherit global environmental variables, so
 we set the variables it uses with it's own configuration utility:
   
 ```{r}
+earthdatalogin::edl_unset_token()
+
 header <- edl_set_token(format="header", set_env_var = FALSE)
 gdalcubes_set_gdal_config("GDAL_HTTP_HEADERS", header)
 ```
 
 
-A classic workflow will often work through file-by-file (or even pixel by pixel).
-However, good, user friendly computing interfaces often provide higher-level abstractions.
-As a user, we don't particularly care about the details of how the data is sliced into
-individual files, but we do want a workflow that does not download more bytes than we need.
-
-In this case, these sea-surface-temperatures where each file covers the full earth surface but are organized into 1 netcdf file for each day of the year.  In contrast, most satellite imagery products may have many different images that must be tiled together into a mosaic to cover the whole earth.  Different data products will also be computed at different spatial resolutions -- is a pixel 100m or 50cm? -- and expressed in different spatial projections.  A workflow will typically need to crop or subset each data layer, and potentially also transform it to a common projection and common resolution.
-
-To facilitate this, `gdalcubes` defines the concept of a `cube_view`: a specification of the projection, extent, and resolution desired.  These may or may not match the projection, extent, or resolution of the data -- the `gdalwarp` utility can efficiently handle these transformations on accessing each remote resource.  In our case, we will use the same projection (`ESPG:4326`, lat/long), and the same resolution (0.01 degree resolution in space, daily resolution in time), but we will crop the spatial extent to a specific location.
+Unfortunately, NASA's netcdf files lack some typical metadata regarding projection and extent (bounding box) of the data.  Some tools are happy to ignore this, just assuming a regular grid, but because GDAL supports explicitly spatial extraction, it wants to know this information.  Nor is this information even provided in the STAC entries! Oh well -- here we provide it rather manually using GDAL's "virtual dataset" prefix-suffix syntax (e.g. note the `a_srs=OGC:CRS84`), so that GDAL does not complain that the CRS (coordinate reference system) is missing.  Additional metadata such as the timestamp for each image is always included in a STAC entry and so can be automatically extracted by `stac_image_collection`.  (`stars` is more forgiving about letting us tack this information on later)
 
 ```{r}
-box <- st_bbox(turtles)
-
-v = cube_view(srs = "EPSG:4326",
-              extent = list(t0 = as.character(start), 
-                            t1 = as.character(end),
-                            left = box[1], right = box[3],
-                            bottom = box[2], top =box[4]),
-              dx = .01, dy = 0.01, dt = "P1D")
+vrt <- function(url) {
+  prefix <-  "vrt://NETCDF:/vsicurl/"
+  suffix <- ":analysed_sst?a_srs=OGC:CRS84&a_ullr=-180,90,180,-90"
+  paste0(prefix, url, suffix)
+}
 ```
 
-We can then apply our view to the image collection to create our data cube.
 
-```{r}
-data_cube <- raster_cube(col, v)  
-```
-
-```{r}
-turtles_small <- turtles |> filter(date > start, date < end)
-```
+Now we're good to go.  This time, we use the full cube at native resolution. (The `cube_view()` approach isn't a good strategy since we don't want a cube that has a regular interval `dt`).  gdalcubes does a much better job at leveraging multi-core compute and handling the vageries of the remote network connections at scale.
 
 
 ```{r}
 bench::bench_time({
-turtle_extract <- data_cube |> 
-  extract_geom(turtles_small, time_column = "date")
+  
+cube <- gdalcubes::stack_cube(vrt(urls), datetime_values = url_dates)
+sst_df <- cube |> extract_geom(mini_turtle,  time_column = "date")
+
 })
 ```
 
-
+The resulting data.frame has the NASA value for SST matching the time and space noted noted in the data.  The NetCDF appears to encodes temperatures in Celsius to two decimal points of accuracy by using integers with a scale factor of 100 (integers are more compact to store than floating points), so we have to convert these.  There are also what looks like some spurious negative values that may signal missing data.  
 
 
 ```{r}
-turtle_temp <- turtles_small |> 
+# re-attach the spatial information
+turtle_sst <- 
+  mini_turtle |> 
   tibble::rowid_to_column("FID") |>
-  inner_join(turtle_extract)
+  inner_join(sst_df, by="FID") |> 
+  # NA fill and convert to decimal
+  mutate(x1 = case_when(x1 < 0 ~ NA, 
+                        .default = x1),
+         nasa_sst = x1/100)
 
+
+```
+
+```{r}
 pal <- tmap::tm_scale_continuous(5, values="hcl.blue_red")
-tm_basemap("CartoDB.DarkMatter") +
-  tm_shape(turtle_temp) + 
-  tm_dots("data", fill.scale = pal)+     
-  tm_legend_hide()
+
+# Quick plot of the turtle data
+tm_basemap("CartoDB.DarkMatter") + 
+  tm_shape(turtle_sst) + tm_dots("nasa_sst", fill.scale = pal)
 ```
