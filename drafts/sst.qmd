@@ -42,24 +42,6 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
   items_fetch()
 })
 ```
-
-
-```{r}
-# potentially faster but not general
-source(system.file("examples/search.R",package="earthdatalogin"))
-# max search of 2000 results
-resp <- edl_search(short_name = "MUR-JPL-L4-GLOB-v4.1",
-                   temporal = c("2004-01-01", "2021-12-31"))
-
-urls <- edl_extract_urls(resp)
-
-# Only those dates that are found in turtles data please
-all_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
-stopifnot(length(all_dates) == length(urls))
-urls <- urls[ all_dates %in% dates ]
-
-```
-
 We only want assets matching dates in our data, not all days in the full range.
 
 ```{r}
@@ -69,6 +51,32 @@ matched <- items$features[ stac_dates %in% dates ]
 urls <- map_chr(matched, list("assets", "data", "href"))
 ```
 
+
+```{r}
+# potentially faster but not general
+source(system.file("examples/search.R",package="earthdatalogin"))
+# max search of 2000 results
+resp <- edl_search(short_name = "MUR-JPL-L4-GLOB-v4.1",
+                   temporal = c("2018-01-01", "2019-12-31"))
+
+urls <- edl_extract_urls(resp)
+
+# Only those dates that are found in turtles data please
+all_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
+urls <- urls[ all_dates %in% dates ]
+
+# in case API does not return full coverage: only turtle dates for which we have SST dates:
+mini_turtle <- turtles |> filter(date %in% url_dates)
+
+```
+
+
+```{r}
+url_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
+
+
+
+```
 
 
 
@@ -139,7 +147,7 @@ sst_df <- cube |> extract_geom(mini_turtle,  time_column = "date")
 })
 ```
 
-The resulting data.frame has the NASA value for SST matching the time and space noted noted in the data.  The NetCDF appears to encodes temperatures in Celsius to two decimal points of accuracy by using integers with a scale factor of 100 (integers are more compact to store than floating points), so we have to convert these.  There are also what looks like some spurious negative values that may signal missing data.  
+The resulting data.frame has the NASA value for SST matching the time and space noted noted in the data.  The NetCDF appears to encodes temperatures to two decimal points of accuracy by using integers with a scale factor of 100 (integers are more compact to store than floating points), so we have to convert these.  There are also what looks like some spurious negative values that may signal missing data.  
 
 
 ```{r}
@@ -148,12 +156,15 @@ turtle_sst <-
   mini_turtle |> 
   tibble::rowid_to_column("FID") |>
   inner_join(sst_df, by="FID") |> 
-  # NA fill and convert to decimal
-  mutate(x1 = case_when(x1 < 0 ~ NA, 
-                        .default = x1),
-         nasa_sst = x1/100)
+  # NA fill and convert to celsius
+  mutate(x1 = replace_na(x1, -32768),
+         x1 = case_when(x1 < -300 ~ NA, .default = x1),
+         nasa_sst = (x1 + 27315) * 0.001)
+```
 
 
+```{r}
+turtle_sst |> as_tibble() |> ggplot(aes(sst, nasa_sst)) + geom_point(aes(col=date)) + geom_abline(slope=1, intercept = 0)
 ```
 
 ```{r}
