@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -216,8 +250,25 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>The NASA EarthData program provides access to an extensive collection of spatial data products from each of it’s 12 Distributed Active Archive Centers (‘DAACs’) on the high-performance S3 storage system of Amazon Web Services (AWS).</p>
-<p>…</p>
+<p>The NASA EarthData program provides access to an extensive collection of spatial data products from each of its 12 Distributed Active Archive Centers (‘DAACs’) on the high-performance S3 storage system of Amazon Web Services (AWS). We can take advantage of range requests with NASA EarthData URLs, but unlike the previous examples, NASA requires an authentication step. NASA offers several different mechanisms, including <code>netrc</code> authentication, token-based authentication, and S3 credentials, but only the first of these works equally well from locations both inside and outside of AWS-based compute, so there really is very little reason to learn the other two.</p>
+<p>The <a href="https://boettiger-lab.github.io/earthdatalogin/"><code>earthdatalogin</code> package in R</a> or the <code>earthaccess</code> package in Python handle the authentication. The R package sets up authentication behind the scenes using environmental variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>earthdatalogin<span class="sc">::</span><span class="fu">edl_netrc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>(A default login is supplied though users are encouraged to <a href="https://urs.earthdata.nasa.gov/home">register</a> for their own individual accounts.) Once this is in place, EarthData’s protected URLs can be used like any other:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">rast</span>(<span class="st">"https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T56JKT.2023246T235950.v2.0/HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vsi=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+dimensions  : 3660, 3660, 1  (nrow, ncol, nlyr)
+resolution  : 30, 30  (x, y)
+extent      : 199980, 309780, 7190200, 7300000  (xmin, xmax, ymin, ymax)
+coord. ref. : WGS 84 / UTM zone 56N (EPSG:32656) 
+source      : HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif 
+name        : HLS.L30.T56JKT.2023246T235950.v2.0.SAA </code></pre>
+</div>
+</div>
 
 
 

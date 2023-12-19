@@ -276,9 +276,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> dask.distributed</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> dask.distributed.Client()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/home/cboettig/.local/lib/python3.10/site-packages/distributed/node.py:182: UserWarning: Port 8787 is already in use.
+<pre><code>/opt/venv/lib/python3.10/site-packages/distributed/node.py:182: UserWarning: Port 8787 is already in use.
 Perhaps you already have a cluster running?
-Hosting the HTTP server on port 42599 instead
+Hosting the HTTP server on port 34209 instead
   warnings.warn(</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>odc.stac.configure_rio(cloud_defaults<span class="op">=</span><span class="va">True</span>, client<span class="op">=</span>client)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -414,7 +414,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ndvi.plot.imshow(row<span class="op">=</span><span class="st">"time"</span>, cmap<span class="op">=</span>cmap, add_colorbar<span class="op">=</span><span class="va">False</span>, size<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;xarray.plot.facetgrid.FacetGrid object at 0x7fa1186efe20&gt;</code></pre>
+<pre><code>&lt;xarray.plot.facetgrid.FacetGrid object at 0x7fd62008e9e0&gt;</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="intro_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="576"></p>
@@ -435,8 +435,8 @@ Large geospatial data comes in many different formats and is frequently divided 
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_valid</span>()</span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/citiesData/CASanFrancisco1937/geojson.json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_valid</span>() <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>label_coords)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>poly <span class="ot">&lt;-</span> ndvi <span class="sc">|&gt;</span> <span class="fu">extract_geom</span>(sf, <span class="at">FUN =</span> mean, <span class="at">reduce_time =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">$</span>NDVI <span class="ot">&lt;-</span> poly<span class="sc">$</span>NDVI</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -444,10 +444,10 @@ Large geospatial data comes in many different formats and is frequently divided 
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ndvi.rio.to_raster(raster_path<span class="op">=</span><span class="st">"ndvi.tif"</span>, driver<span class="op">=</span><span class="st">"COG"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>sf_url <span class="op">=</span> <span class="st">"/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>sf_url <span class="op">=</span> <span class="st">"/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/citiesData/CASanFrancisco1937/geojson.json"</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>mean_ndvi <span class="op">=</span> zonal_stats(sf_url, <span class="st">"ndvi.tif"</span>, stats<span class="op">=</span><span class="st">"mean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/home/cboettig/.local/lib/python3.10/site-packages/rasterstats/io.py:328: NodataWarning: Setting nodata to -999; specify nodata explicitly
+<pre><code>/opt/venv/lib/python3.10/site-packages/rasterstats/io.py:328: NodataWarning: Setting nodata to -999; specify nodata explicitly
   warnings.warn(</code></pre>
 </div>
 </div>
@@ -462,7 +462,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(ndvi_stars) <span class="sc">+</span> <span class="fu">tm_raster</span>(<span class="at">col.scale =</span> mako) <span class="sc">+</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(sf) <span class="sc">+</span> <span class="fu">tm_polygons</span>(<span class="st">'NDVI'</span>, <span class="at">fill.scale =</span> fill) <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(sf) <span class="sc">+</span> <span class="fu">tm_text</span>(<span class="st">"holc_grade"</span>, <span class="at">col=</span><span class="st">"darkblue"</span>, <span class="at">size=</span><span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(sf) <span class="sc">+</span> <span class="fu">tm_text</span>(<span class="st">"grade"</span>, <span class="at">col=</span><span class="st">"darkblue"</span>, <span class="at">size=</span><span class="fl">0.6</span>) <span class="sc">+</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_legend_hide</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="intro_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
@@ -489,7 +489,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>sf <span class="sc">|&gt;</span> </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(holc_grade) <span class="sc">|&gt;</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(grade) <span class="sc">|&gt;</span> </span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ndvi =</span> <span class="fu">mean</span>(NDVI), </span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(NDVI)) <span class="sc">|&gt;</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -497,7 +497,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;">holc_grade</th>
+<th style="text-align: left;">grade</th>
 <th style="text-align: right;">ndvi</th>
 <th style="text-align: right;">sd</th>
 </tr>
@@ -505,23 +505,28 @@ Large geospatial data comes in many different formats and is frequently divided 
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">A</td>
-<td style="text-align: right;">0.3201691</td>
-<td style="text-align: right;">0.0611824</td>
+<td style="text-align: right;">0.3201204</td>
+<td style="text-align: right;">0.0611414</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">B</td>
-<td style="text-align: right;">0.2138027</td>
-<td style="text-align: right;">0.0783241</td>
+<td style="text-align: right;">0.2138481</td>
+<td style="text-align: right;">0.0783211</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">C</td>
-<td style="text-align: right;">0.1955999</td>
-<td style="text-align: right;">0.0564923</td>
+<td style="text-align: right;">0.1956285</td>
+<td style="text-align: right;">0.0564827</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">0.1949583</td>
-<td style="text-align: right;">0.0385485</td>
+<td style="text-align: right;">0.1949750</td>
+<td style="text-align: right;">0.0385796</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">0.0962092</td>
+<td style="text-align: right;">NA</td>
 </tr>
 </tbody>
 </table>
@@ -535,9 +540,9 @@ Large geospatial data comes in many different formats and is frequently divided 
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>(gpl.</span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  from_geopandas(sf).</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  group_by(<span class="st">"holc_grade"</span>).</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  group_by(<span class="st">"grade"</span>).</span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  agg(pl.col(<span class="st">"ndvi"</span>).mean()).</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  sort(<span class="st">"holc_grade"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  sort(<span class="st">"grade"</span>)</span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div><style>
@@ -547,11 +552,11 @@ Large geospatial data comes in many different formats and is frequently divided 
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (4, 2)</small>
+<small>shape: (5, 2)</small>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th">holc_grade</th>
+<th data-quarto-table-cell-role="th">grade</th>
 <th data-quarto-table-cell-role="th">ndvi</th>
 </tr>
 <tr class="odd">
@@ -561,20 +566,24 @@ Large geospatial data comes in many different formats and is frequently divided 
 </thead>
 <tbody>
 <tr class="odd">
-<td>"A"</td>
-<td>0.338817</td>
+<td>null</td>
+<td>0.157821</td>
 </tr>
 <tr class="even">
-<td>"B"</td>
-<td>0.247294</td>
+<td>"A"</td>
+<td>0.338723</td>
 </tr>
 <tr class="odd">
-<td>"C"</td>
-<td>0.231133</td>
+<td>"B"</td>
+<td>0.247344</td>
 </tr>
 <tr class="even">
+<td>"C"</td>
+<td>0.231182</td>
+</tr>
+<tr class="odd">
 <td>"D"</td>
-<td>0.225662</td>
+<td>0.225696</td>
 </tr>
 </tbody>
 </table>
