@@ -220,8 +220,8 @@ In addition to large scale raster data such as satellite imagery, the analysis o
 
 ```{r}
 #| message = FALSE, results="hide"
-sf <- st_read("/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson") |>
-  st_make_valid()
+sf <- st_read("/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/citiesData/CASanFrancisco1937/geojson.json") |>
+  st_make_valid() |> select(-label_coords)
 poly <- ndvi |> extract_geom(sf, FUN = mean, reduce_time = TRUE)
 sf$NDVI <- poly$NDVI
 ```
@@ -231,7 +231,7 @@ sf$NDVI <- poly$NDVI
 
 ```{python}
 ndvi.rio.to_raster(raster_path="ndvi.tif", driver="COG")
-sf_url = "/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/CASanFrancisco1937.geojson"
+sf_url = "/vsicurl/https://dsl.richmond.edu/panorama/redlining/static/citiesData/CASanFrancisco1937/geojson.json"
 mean_ndvi = zonal_stats(sf_url, "ndvi.tif", stats="mean")
 
 ```
@@ -251,7 +251,7 @@ We plot the underlying NDVI as well as the average NDVI of each polygon, along w
 #| message = FALSE, warning = FALSE
 tm_shape(ndvi_stars) + tm_raster(col.scale = mako) +
   tm_shape(sf) + tm_polygons('NDVI', fill.scale = fill) +
-  tm_shape(sf) + tm_text("holc_grade", col="darkblue", size=0.6) +
+  tm_shape(sf) + tm_text("grade", col="darkblue", size=0.6) +
   tm_legend_hide()
 ```
 
@@ -275,7 +275,7 @@ Are historically redlined areas still less green?
 ```{r}
 sf |> 
   as_tibble() |>
-  group_by(holc_grade) |> 
+  group_by(grade) |> 
   summarise(ndvi = mean(NDVI), 
             sd = sd(NDVI)) |>
   knitr::kable()
@@ -289,9 +289,9 @@ import polars as pl
 
 (gpl.
   from_geopandas(sf).
-  group_by("holc_grade").
+  group_by("grade").
   agg(pl.col("ndvi").mean()).
-  sort("holc_grade")
+  sort("grade")
 )
 ```
 
