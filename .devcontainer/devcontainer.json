@@ -1,5 +1,6 @@
 {
 	  "image": "ghcr.io/boettiger-lab/nasa-tops:latest",
+	  "runArgs": [ "--security-opt", "seccomp=unconfined" ]
 	  "name": "NASA TOPS Environment",
 	  // build image as a github-action and grab instead; faster.
 	  // "build": {
