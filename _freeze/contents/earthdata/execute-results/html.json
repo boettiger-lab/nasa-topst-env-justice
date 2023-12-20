@@ -1,0 +1,14 @@
+{
+  "hash": "936e34da6da3eac5bbee72becc66c013",
+  "result": {
+    "markdown": "---\ntitle: \"NASA EarthData\"\nformat: html\n---\n\n\nThe NASA EarthData program provides access to an extensive collection of spatial data products from each of its 12 Distributed Active Archive Centers ('DAACs') on the high-performance S3 storage system of Amazon Web Services (AWS). We can take advantage of range requests with NASA EarthData URLs, but unlike the previous examples,\nNASA requires an authentication step. NASA offers several different mechanisms, including `netrc` authentication, token-based authentication, and S3 credentials, but only the first of these works equally well from locations both inside and outside of AWS-based compute, so there really is very little reason to learn the other two.\n\nThe [`earthdatalogin` package in R](https://boettiger-lab.github.io/earthdatalogin/) or the `earthaccess` package in Python handle the authentication. The R package sets up authentication behind the scenes using environmental variables.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nearthdatalogin::edl_netrc()\n```\n:::\n\n\n(A default login is supplied though users are encouraged to [register](https://urs.earthdata.nasa.gov/home) for their own individual accounts.)  Once this is in place, EarthData's protected URLs can be used like any other: \n\n\n::: {.cell}\n\n```{.r .cell-code}\nterra::rast(\"https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T56JKT.2023246T235950.v2.0/HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif\",\n     vsi=TRUE)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nclass       : SpatRaster \ndimensions  : 3660, 3660, 1  (nrow, ncol, nlyr)\nresolution  : 30, 30  (x, y)\nextent      : 199980, 309780, 7190200, 7300000  (xmin, xmax, ymin, ymax)\ncoord. ref. : WGS 84 / UTM zone 56N (EPSG:32656) \nsource      : HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif \nname        : HLS.L30.T56JKT.2023246T235950.v2.0.SAA \n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

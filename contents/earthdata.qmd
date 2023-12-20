@@ -3,6 +3,21 @@ title: "NASA EarthData"
 format: html
 ---
 
-The NASA EarthData program provides access to an extensive collection of spatial data products from each of it's 12 Distributed Active Archive Centers ('DAACs') on the high-performance S3 storage system of Amazon Web Services (AWS). 
+The NASA EarthData program provides access to an extensive collection of spatial data products from each of its 12 Distributed Active Archive Centers ('DAACs') on the high-performance S3 storage system of Amazon Web Services (AWS). We can take advantage of range requests with NASA EarthData URLs, but unlike the previous examples,
+NASA requires an authentication step. NASA offers several different mechanisms, including `netrc` authentication, token-based authentication, and S3 credentials, but only the first of these works equally well from locations both inside and outside of AWS-based compute, so there really is very little reason to learn the other two.
 
-...
+The [`earthdatalogin` package in R](https://boettiger-lab.github.io/earthdatalogin/) or the `earthaccess` package in Python handle the authentication. The R package sets up authentication behind the scenes using environmental variables.
+
+```{r}
+earthdatalogin::edl_netrc()
+```
+
+(A default login is supplied though users are encouraged to [register](https://urs.earthdata.nasa.gov/home) for their own individual accounts.)  Once this is in place, EarthData's protected URLs can be used like any other: 
+
+```{r}
+terra::rast("https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T56JKT.2023246T235950.v2.0/HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif",
+     vsi=TRUE)
+
+
+```
+
