@@ -5,10 +5,12 @@ library(rstac)
 library(tidyverse)
 library(stars)
 library(tmap)
+```
 
 
-earthdatalogin::edl_set_token()
 
+```{r}
+earthdatalogin::edl_netrc()
 ```
 
 
@@ -30,10 +32,12 @@ tm_basemap("CartoDB.DarkMatter") +
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+# We should be able to search by the STAC API
+# but it throws a 500 error with too many dates
 bench::bench_time({
-start =  min(turtles$date) # "2018-01-01" #
-end =  max(turtles$date) # "2018-12-31"   #
+start = "2018-01-01" # min(turtles$date) #  #
+end =   "2018-12-31" # max(turtles$date)    #
 items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
   stac_search(collections = "MUR-JPL-L4-GLOB-v4.1",
               bbox = c(st_bbox(turtles)),
@@ -41,44 +45,37 @@ items <- stac("https://cmr.earthdata.nasa.gov/stac/POCLOUD") |>
   get_request() |>
   items_fetch()
 })
-```
-We only want assets matching dates in our data, not all days in the full range.
 
-```{r}
+
 # Only those dates that are found in turtles data please
 stac_dates <- rstac::items_datetime(items) |> as.Date()
 matched <- items$features[ stac_dates %in% dates ]
 urls <- map_chr(matched, list("assets", "data", "href"))
 ```
 
-
 ```{r}
 # potentially faster but not general
-source(system.file("examples/search.R",package="earthdatalogin"))
-# max search of 2000 results
+# max search of 2000 results, use repeated calls with smaller date ranges
 resp <- edl_search(short_name = "MUR-JPL-L4-GLOB-v4.1",
                    temporal = c("2018-01-01", "2019-12-31"))
-
 urls <- edl_extract_urls(resp)
+```
 
+
+```{r}
 # Only those dates that are found in turtles data please
-all_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
-urls <- urls[ all_dates %in% dates ]
+url_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
+urls <- urls[ url_dates %in% dates ]
 
-# in case API does not return full coverage: only turtle dates for which we have SST dates:
+# in case API does not return full date coverage: only turtle dates for which we have SST dates:
+url_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
 mini_turtle <- turtles |> filter(date %in% url_dates)
 
 ```
 
 
-```{r}
-url_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
 
-
-
-```
-
-
+## A partial approach, via stars:
 
 This approach works on a subset of URLs,  unfortunately stars is not particularly robust at reading in large numbers of URLs
 
@@ -87,22 +84,24 @@ This approach works on a subset of URLs,  unfortunately stars is not particularl
 some_urls <- urls[1:20]
 some_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", some_urls), format="%Y%m%d")
 # If we test with a subset of urls, we need to test with a subset of turtles too!
-mini_turtle <- turtles |> filter(date %in% some_dates)
+tiny_turtle <- mini_turtle |> filter(date %in% some_dates)
 
 bench::bench_time({ # 1.02 min for 20 urls
-  sst <- read_stars(paste0("/vsicurl/", some_urls), "analysed_sst", quiet=TRUE)
+  sst <- read_stars(paste0("/vsicurl/", some_urls), "analysed_sst", 
+                    #along = list(time = some_dates),  ## fails for proxy objects
+                    quiet=TRUE)
   st_crs(sst) <- 4326  # Christ, someone omitted CRS from metadata
   # before we can extract on dates, we need to populate this date information
   sst <- st_set_dimensions(sst, "time", values = some_dates)
 })
 
 bench::bench_time({
-  turtle_temp <- st_extract(sst, mini_turtle, time_column = "date")
+  turtle_temp <- st_extract(sst, tiny_turtle, time_column = "date")
 })
 ```
 
 
-## gdalcubes
+## gdalcubes -- A more scalable solution
 
 ```{r}
 library(gdalcubes)
@@ -110,17 +109,14 @@ gdalcubes_set_gdal_config("GDAL_NUM_THREADS", "ALL_CPUS")
 gdalcubes_options(parallel = TRUE)
 ```
 
-Access to NASA's EarthData collection requires an authentication token.
+Access to NASA's EarthData collection requires an authentication.
 The `earthdatalogin` package exists only to handle this!  
 Unlike `sf`, `terra` etc, the way `gdalcubes` calls `gdal` 
-does not inherit global environmental variables, so 
-we set the variables it uses with it's own configuration utility:
+does not inherit global environmental variables, so this helper
+function sets the configuration.
   
 ```{r}
-earthdatalogin::edl_unset_token()
-
-header <- edl_set_token(format="header", set_env_var = FALSE)
-gdalcubes_set_gdal_config("GDAL_HTTP_HEADERS", header)
+earthdatalogin::with_gdalcubes()
 ```
 
 
@@ -164,7 +160,11 @@ turtle_sst <-
 
 
 ```{r}
-turtle_sst |> as_tibble() |> ggplot(aes(sst, nasa_sst)) + geom_point(aes(col=date)) + geom_abline(slope=1, intercept = 0)
+turtle_sst |>
+  as_tibble() |> 
+  ggplot(aes(sst, nasa_sst)) + 
+  geom_point(aes(col=date)) + 
+  geom_abline(slope=1, intercept = 0)
 ```
 
 ```{r}

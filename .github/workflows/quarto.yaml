@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: ghcr.io/boettiger-lab/nasa-tops:latest
-      options: --user root
+      options: --user root --security-opt seccomp=unconfined
     permissions:
       contents: write
     steps:
