@@ -146,3 +146,4 @@ xarray==2023.8.0
 xesmf==0.8.2
 zict==3.0.0
 zipp==3.17.0
+lxml
