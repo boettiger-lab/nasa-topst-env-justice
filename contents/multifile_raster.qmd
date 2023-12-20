@@ -4,6 +4,13 @@ format: html
 author: Eli Holmes & Carl Boettiger
 ---
 
+```{r include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+::: {.panel-tabset}
+
+## python
 
 ```{python}
 import requests
@@ -13,9 +20,28 @@ from io import StringIO
 import xarray as xr
 from datetime import datetime
 import rioxarray # used magically via xr
+import dask
 ```
 
+## R
+
+```{r}
+library(rvest)
+library(stringr)
+library(stars)
+```
+
+:::
+
+
+
 We extract some list of urls to netcdf files:
+
+
+::: {.panel-tabset}
+
+## python
+
 
 ```{python}
 url = "https://noaadata.apps.nsidc.org/NOAA/G02202_V4/north/daily/1978/"
@@ -26,10 +52,45 @@ sic_files = [i for i in files if 'conc' in i]
 sic_urls = [url + s for s in sic_files]
 ```
 
-We open all these netcdf files lazily over the virtual filesystem, allowing us to efficiently subset just what we need.
+## R
 
-```{python}
-all = xr.open_mfdataset(sic_urls,  variable="cdr_seaice_conc", engine="rasterio", concat_dim="time",  combine="nested")
+```{r}
+url = "https://noaadata.apps.nsidc.org/NOAA/G02202_V4/north/daily/1978/"
+page <- read_html(url)
+files <- page %>% html_nodes("a") %>% html_attr("href")
+urls <- paste0(url, files)
+sic_urls <- urls |> subset(str_detect(urls, "conc"))
 ```
 
+:::
+
+
+We open all these netcdf files lazily over the virtual filesystem, allowing us to efficiently subset just what we need.
+
+
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+cdr = xr.open_mfdataset(sic_urls, 
+                        variable="cdr_seaice_conc", 
+                        engine="rasterio", 
+                        concat_dim="time", 
+                        combine="nested")
+```
+
+## R
+
+```{r}
+dates <- stringr::str_extract(sic_urls, "\\d{8}") |> lubridate::ymd()
+
+cdr <- read_stars(paste0("/vsicurl/", sic_urls),
+                  "cdr_seaice_conc", 
+                  along = list(time = dates), 
+                  quiet = TRUE)
+```
+
+:::
 

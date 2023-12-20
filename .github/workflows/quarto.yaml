@@ -8,6 +8,9 @@ name: Quarto Publish
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    container: 
+      image: ghcr.io/boettiger-lab/nasa-tops:latest
+      options: --user root
     permissions:
       contents: write
     steps:
