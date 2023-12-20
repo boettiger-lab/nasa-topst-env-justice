@@ -4,7 +4,7 @@ FROM ghcr.io/rocker-org/devcontainer/tidyverse:4.3
 
 ENV NB_USER=rstudio
 ENV VIRTUAL_ENV=/opt/venv
-ENV PATH=${PATH}:${VIRTUAL_ENV}/bin
+ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
 ADD https://raw.githubusercontent.com/rocker-org/rocker-versioned2/c1a472465532c8349cf0ad4f3f95c86e85787dc3/scripts/install_python.sh install_python.sh
 RUN bash install_python.sh && rm install_python.sh
 
