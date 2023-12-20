@@ -1,0 +1,35 @@
+---
+title: "Multifile raster arrays"
+format: html
+author: Eli Holmes & Carl Boettiger
+---
+
+
+```{python}
+import requests
+from lxml.html import parse
+from io import StringIO
+
+import xarray as xr
+from datetime import datetime
+import rioxarray # used magically via xr
+```
+
+We extract some list of urls to netcdf files:
+
+```{python}
+url = "https://noaadata.apps.nsidc.org/NOAA/G02202_V4/north/daily/1978/"
+r = requests.get(url) 
+tree = parse(StringIO(r.text)).getroot()
+files = [a.text for a in tree.iter('a')]
+sic_files = [i for i in files if 'conc' in i]
+sic_urls = [url + s for s in sic_files]
+```
+
+We open all these netcdf files lazily over the virtual filesystem, allowing us to efficiently subset just what we need.
+
+```{python}
+all = xr.open_mfdataset(sic_urls,  variable="cdr_seaice_conc", engine="rasterio", concat_dim="time",  combine="nested")
+```
+
+
