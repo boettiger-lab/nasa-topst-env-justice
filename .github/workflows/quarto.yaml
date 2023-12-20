@@ -24,7 +24,7 @@ jobs:
 #        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: update dependencies
-        run: python -m pip install .devcontainer/requirements.txt
+        run: su $USER && python -m pip install .devcontainer/requirements.txt
 
       - name: Render and Publish
         if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
