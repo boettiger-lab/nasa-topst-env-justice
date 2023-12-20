@@ -1,0 +1,14 @@
+{
+  "hash": "63031fc1bbdba655e277024d069534b1",
+  "result": {
+    "markdown": "---\ntitle: \"Multifile raster arrays\"\nformat: html\nauthor: Eli Holmes & Carl Boettiger\n---\n\n\n\n\n::: {.panel-tabset}\n\n## python\n\n\n::: {.cell}\n\n```{.python .cell-code}\nimport requests\nfrom lxml.html import parse\nfrom io import StringIO\n\nimport xarray as xr\nfrom datetime import datetime\nimport rioxarray # used magically via xr\nimport dask\n```\n:::\n\n\n## R\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(rvest)\nlibrary(stringr)\nlibrary(stars)\n```\n:::\n\n\n:::\n\n\n\nWe extract some list of urls to netcdf files:\n\n\n::: {.panel-tabset}\n\n## python\n\n\n\n::: {.cell}\n\n```{.python .cell-code}\nurl = \"https://noaadata.apps.nsidc.org/NOAA/G02202_V4/north/daily/1978/\"\nr = requests.get(url) \ntree = parse(StringIO(r.text)).getroot()\nfiles = [a.text for a in tree.iter('a')]\nsic_files = [i for i in files if 'conc' in i]\nsic_urls = [url + s for s in sic_files]\n```\n:::\n\n\n## R\n\n\n::: {.cell}\n\n```{.r .cell-code}\nurl = \"https://noaadata.apps.nsidc.org/NOAA/G02202_V4/north/daily/1978/\"\npage <- read_html(url)\nfiles <- page %>% html_nodes(\"a\") %>% html_attr(\"href\")\nurls <- paste0(url, files)\nsic_urls <- urls |> subset(str_detect(urls, \"conc\"))\n```\n:::\n\n\n:::\n\n\nWe open all these netcdf files lazily over the virtual filesystem, allowing us to efficiently subset just what we need.\n\n\n\n::: {.panel-tabset}\n\n## Python\n\n\n::: {.cell}\n\n```{.python .cell-code}\ncdr = xr.open_mfdataset(sic_urls, \n                        variable=\"cdr_seaice_conc\", \n                        engine=\"rasterio\", \n                        concat_dim=\"time\", \n                        combine=\"nested\")\n```\n:::\n\n\n## R\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndates <- stringr::str_extract(sic_urls, \"\\\\d{8}\") |> lubridate::ymd()\n\ncdr <- read_stars(paste0(\"/vsicurl/\", sic_urls),\n                  \"cdr_seaice_conc\", \n                  along = list(time = dates), \n                  quiet = TRUE)\n```\n:::\n\n\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
