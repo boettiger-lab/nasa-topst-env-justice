@@ -17,8 +17,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
+#      - name: Set up Quarto
+#        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render and Publish
         if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
