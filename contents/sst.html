@@ -289,23 +289,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Searching for NASA sea-surface-temperature data is somewhat tricky, since the search interfaces take only date ranges, not specific dates. The SST data is organized as one netcdf file with global extent for each day, so we’ll have to request all URLs in a date range and then filter those down to the URLs matching the dates we need.</p>
-<p>NASA’s STAC search is much slower and more prone to server errors than most STAC engines. NASA provides its own search API, which is substantially faster and more reliable, though limited to 2000 results per call.</p>
+<p>NASA’s STAC search is unfortunately much slower and more prone to server errors than most STAC engines at present. NASA provides its own search API, which is substantially faster and more reliable, but does not provide metadata in a widely recognized standard. Here we will get 1000s of URLs, covering every day in this nearly 15 year span.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>last_date <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">max</span>(turtles<span class="sc">$</span>date))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">edl_search</span>(<span class="at">short_name =</span> <span class="st">"MUR-JPL-L4-GLOB-v4.1"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">temporal =</span> <span class="fu">c</span>(<span class="st">"2015-01-01"</span>, last_date))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> <span class="fu">edl_extract_urls</span>(resp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> <span class="fu">edl_search</span>(<span class="at">short_name =</span> <span class="st">"MUR-JPL-L4-GLOB-v4.1"</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">temporal =</span> <span class="fu">c</span>(<span class="fu">min</span>(turtles<span class="sc">$</span>date), <span class="fu">max</span>(turtles<span class="sc">$</span>date)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Now we subset URLs to only those dates that are found in turtles data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset urls to only those dates that are found in turtles data please</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>url_dates <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> urls[ url_dates <span class="sc">%in%</span> dates ]</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If we didnt' search the full turtle history:</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>url_dates <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>mini_turtle <span class="ot">&lt;-</span> turtles <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">%in%</span> url_dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>url_dates <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> urls[ url_dates <span class="sc">%in%</span> dates ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Okay, we have 924 urls now from which to extract temperatures at our observed turtle coordinates.</p>
+<p>Okay, we have 1695 URLs now from which to extract temperatures at our observed turtle coordinates.</p>
 <section id="a-partial-approach-via-stars" class="level2">
 <h2 class="anchored" data-anchor-id="a-partial-approach-via-stars">A partial approach, via stars:</h2>
 <p>This approach works on a subset of URLs, unfortunately stars is not particularly robust at reading in large numbers of URLs</p>
@@ -313,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>some_urls <span class="ot">&lt;-</span> urls[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>some_dates <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, some_urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># If we test with a subset of urls, we need to test with a subset of turtles too!</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tiny_turtle <span class="ot">&lt;-</span> mini_turtle <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">%in%</span> some_dates)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tiny_turtle <span class="ot">&lt;-</span> turtles <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">%in%</span> some_dates)</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">bench_time</span>({ </span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  sst <span class="ot">&lt;-</span> <span class="fu">read_stars</span>(<span class="fu">paste0</span>(<span class="st">"/vsicurl/"</span>, some_urls), <span class="st">"analysed_sst"</span>, </span>
@@ -325,14 +319,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>process    real 
-  6.84s   1.32m </code></pre>
+  5.58s   1.16m </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">bench_time</span>({</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  turtle_temp <span class="ot">&lt;-</span> <span class="fu">st_extract</span>(sst, tiny_turtle, <span class="at">time_column =</span> <span class="st">"date"</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>process    real 
-  9.71s   2.13m </code></pre>
+ 15.73s   4.58m </code></pre>
 </div>
 </div>
 </section>
@@ -358,22 +352,24 @@ Unlike <code>sf</code>, <code>terra</code> etc, the way <code>gdalcubes</code> c
 </div>
 <p>Now we’re good to go. We create the VRT versions of the URLs to define the cube. We can then extract sst data at the point coordinates given by turtle object.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">bench_time</span>({</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> gdalcubes<span class="sc">::</span><span class="fu">stack_cube</span>(<span class="fu">vrt</span>(urls), <span class="at">datetime_values =</span> url_dates)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sst_df <span class="ot">&lt;-</span> cube <span class="sc">|&gt;</span> <span class="fu">extract_geom</span>(mini_turtle,  <span class="at">time_column =</span> <span class="st">"date"</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>datetime <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> gdalcubes<span class="sc">::</span><span class="fu">stack_cube</span>(<span class="fu">vrt</span>(urls), <span class="at">datetime_values =</span> datetime)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">bench_time</span>({</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>sst_df <span class="ot">&lt;-</span> cube <span class="sc">|&gt;</span> <span class="fu">extract_geom</span>(turtles,  <span class="at">time_column =</span> <span class="st">"date"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>process    real 
-  6.73s   2.86m </code></pre>
+  8.65s   4.51m </code></pre>
 </div>
 </div>
 <p>The resulting <code>data.frame</code> has the NASA value for SST matching the time and space noted noted in the data. The NetCDF appears to encodes temperatures to two decimal points of accuracy by using integers with a scale factor of 100 (integers are more compact to store than floating points), so we have to convert these. There are also what looks like some spurious negative values that may signal missing data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># re-attach the spatial information</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>turtle_sst <span class="ot">&lt;-</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  mini_turtle <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  turtles <span class="sc">|&gt;</span> </span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"FID"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sst_df, <span class="at">by=</span><span class="st">"FID"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># NA fill and convert to celsius</span></span>
