@@ -1,0 +1,29 @@
+remotes::install_github("boettiger-lab/earthdatalogin")
+library(earthdatalogin)
+edl_netrc()
+urls <- edl_search(short_name = "MUR-JPL-L4-GLOB-v4.1",
+                   temporal = c("2019-01-01", "2019-01-31"))
+
+
+vrt <- function(url) {
+  prefix <-  "vrt://NETCDF:/vsicurl/"
+  suffix <- ":analysed_sst?a_srs=OGC:CRS84&a_ullr=-180,90,180,-90"
+  paste0(prefix, url, suffix)
+}
+
+
+library(gdalcubes)
+gdalcubes_options(parallel = parallel::detectCores()*2)
+url_dates <- as.Date(gsub(".*(\\d{8})\\d{6}.*", "\\1", urls), format="%Y%m%d")
+data_gd <- gdalcubes::stack_cube(vrt(urls), datetime_values = url_dates)
+
+
+
+bench::bench_time({
+  extent = list(left=-93, right=-76, bottom=41, top=49, 
+                t0="2019-01-01", t1="2019-01-31")
+  data_gd |> 
+    gdalcubes::crop(extent) |> 
+    aggregate_time(dt="P1M", method="sd") |> 
+    plot(col = viridisLite::viridis(10))
+})
