@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/python-ex.html</loc>
-    <lastmod>2023-12-22T18:47:28.514Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
-    <lastmod>2023-12-22T18:47:27.962Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/multifile_raster.html</loc>
-    <lastmod>2023-12-22T18:47:27.098Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/earthdata.html</loc>
-    <lastmod>2023-12-22T18:47:25.918Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/ace.html</loc>
-    <lastmod>2023-12-22T18:47:24.818Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/computing-environment.html</loc>
-    <lastmod>2023-12-22T18:47:25.482Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/intro.html</loc>
-    <lastmod>2023-12-22T18:47:26.642Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst.html</loc>
-    <lastmod>2023-12-22T18:47:27.638Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst-xarray.html</loc>
+    <lastmod>2024-01-04T21:43:58.256Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/R-ex.html</loc>
-    <lastmod>2023-12-22T18:47:28.234Z</lastmod>
+    <lastmod>2024-01-04T21:43:57.600Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst.html</loc>
+    <lastmod>2024-01-04T21:43:56.984Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/multifile_raster.html</loc>
+    <lastmod>2024-01-04T21:43:56.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/earthdata.html</loc>
+    <lastmod>2024-01-04T21:43:54.856Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/ace.html</loc>
+    <lastmod>2024-01-04T21:43:53.740Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/computing-environment.html</loc>
+    <lastmod>2024-01-04T21:43:54.408Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/intro.html</loc>
+    <lastmod>2024-01-04T21:43:55.584Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst-gdal.html</loc>
+    <lastmod>2024-01-04T21:43:56.444Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
+    <lastmod>2024-01-04T21:43:57.296Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/python-ex.html</loc>
+    <lastmod>2024-01-04T21:43:57.884Z</lastmod>
   </url>
 </urlset>
