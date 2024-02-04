@@ -27,5 +27,7 @@ geoviews
 earthaccess
 pyresample
 contextily
-pygeoweaver
+rioxarray
+geopandas
+rasterstats
 
