@@ -25,6 +25,7 @@ jupyterlab-git
 jupyter-tensorboard-proxy 
 jupyter-resource-usage
 jupyter-vscode-proxy
+jupyter-rsession-proxy
 jupyter-book
 jupyterlab_myst
 gh-scoped-creds

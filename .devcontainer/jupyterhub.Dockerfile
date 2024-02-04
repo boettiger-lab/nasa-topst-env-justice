@@ -1,4 +1,4 @@
-## devcontainer-focused Rocker
+# devcontainer-focused Rocker
 FROM ghcr.io/rocker-org/devcontainer/tidyverse:4.3
 
 ## latest version of geospatial libs
@@ -19,8 +19,8 @@ RUN chown ${NB_USER}:staff -R ${R_HOME}/site-library
 RUN git config --system pull.rebase false && \
     git config --system credential.helper 'cache --timeout=36000'
 
-## codeserver
-RUN curl -fsSL https://code-server.dev/install.sh | sh
+# codeserver
+RUN curl -fsSL https://code-server.dev/install.sh | sh && rm -rf .cache
 
 USER rstudio
 WORKDIR /home/rstudio
@@ -28,10 +28,10 @@ RUN usermod -s /bin/bash rstudio
 ENV PATH=$PATH:/home/rstudio/.local/bin
 
 COPY jupyter-requirements.txt jupyter-requirements.txt
-RUN python -m pip install -r jupyter-requirements.txt && rm jupyter-requirements.txt
+RUN python -m pip install --no-cache-dir -r jupyter-requirements.txt && rm jupyter-requirements.txt
 
 COPY nasa-requirements.txt requirements.txt
-RUN python -m pip install -r requirements.txt && rm requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt && rm requirements.txt
 
 COPY install.R install.R
 RUN Rscript install.R && rm install.R
