@@ -24,4 +24,5 @@ jobs:
 
       - name: Render
         run: |
-             quarto render --cache-refresh
+             rm -rf _freeze
+             quarto render
