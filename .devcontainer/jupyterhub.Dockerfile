@@ -20,7 +20,7 @@ RUN git config --system pull.rebase false && \
     git config --system credential.helper 'cache --timeout=36000'
 
 # codeserver
-RUN curl -fsSL https://code-server.dev/install.sh | sh
+RUN curl -fsSL https://code-server.dev/install.sh | sh && rm -rf .cache
 
 USER rstudio
 WORKDIR /home/rstudio
