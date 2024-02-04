@@ -33,17 +33,15 @@ website:
           - text: JuypterHub
             icon: cloud
             href: https://openscapes.2i2c.cloud/
-      - section: Recipes
+      - section: Tutorials
         contents:
           - text: Introduction
             icon: play-btn
             href: contents/intro.qmd
-          - text: Biodiversity Priorities
-            icon: tree-fill
-            href: contents/ace.qmd  
           - text: NASA EarthData
             icon: rocket
             href: contents/earthdata.qmd  
+      - section: Recipes 
       - section: Background
         contents:
           - text: Portable Environments
