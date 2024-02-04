@@ -18,7 +18,7 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
       - name: Build the Docker image
         if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
-        run: docker build .devcontainer --tag ghcr.io/boettiger-lab/nasa-tops:latest
+        run: docker build .devcontainer -f .devcontainer/jupyterhub.Dockerfile --tag ghcr.io/boettiger-lab/nasa-tops:latest
       - name: Publish
         if: github.repository == 'boettiger-lab/nasa-topst-env-justice'
         run: docker push ghcr.io/boettiger-lab/nasa-tops:latest
