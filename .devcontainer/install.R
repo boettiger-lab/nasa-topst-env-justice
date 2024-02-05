@@ -7,6 +7,9 @@
 install.packages(c("rstac", "spData", "earthdatalogin", "quarto", "pak", "decor"))
 pak::pkg_install('github::r-tmap/tmap')
 
+pak::pkg_install('github::cboettig/earthdatalogin')
+pak::pkg_install('github::cboettig/duckdbfs')
+
 # vscode and jupyter plugins
 #install.packages(c("IRkernel", "languageserver", "httpgd"))
 #IRkernel::installspec()
