@@ -1,43 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/xarray-benchmark.html</loc>
-    <lastmod>2024-02-05T00:56:25.557Z</lastmod>
-  </url>
-  <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/intro-python.html</loc>
-    <lastmod>2024-02-05T00:56:24.737Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
-    <lastmod>2024-02-05T00:56:24.057Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst-gdal.html</loc>
-    <lastmod>2024-02-05T00:56:23.185Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/earthdata.html</loc>
-    <lastmod>2024-02-05T00:54:23.602Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/computing-environment.html</loc>
-    <lastmod>2024-02-05T00:54:22.850Z</lastmod>
+    <lastmod>2024-02-05T16:57:40.123Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/intro-R.html</loc>
-    <lastmod>2024-02-05T00:56:22.733Z</lastmod>
+    <lastmod>2024-02-05T16:57:39.355Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst.html</loc>
-    <lastmod>2024-02-05T00:56:23.737Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/computing-environment.html</loc>
+    <lastmod>2024-02-05T16:56:41.347Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/R-ex.html</loc>
-    <lastmod>2024-02-05T00:56:24.333Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/earthdata.html</loc>
+    <lastmod>2024-02-05T16:56:42.107Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/contents/sst-xarray.html</loc>
-    <lastmod>2024-02-05T00:56:25.117Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
+    <lastmod>2024-02-05T16:57:39.695Z</lastmod>
   </url>
 </urlset>
