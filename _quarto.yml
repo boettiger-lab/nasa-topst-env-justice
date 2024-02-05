@@ -33,14 +33,19 @@ website:
           - text: JuypterHub
             icon: cloud
             href: https://openscapes.2i2c.cloud/
-      - section: Tutorials
+      - section: R Tutorials
         contents:
-          - text: Introduction
+          - text: Introduction (R)
             icon: play-btn
-            href: contents/intro.qmd
+            href: contents/intro-R.qmd
           - text: NASA EarthData
             icon: rocket
-            href: contents/earthdata.qmd  
+            href: contents/earthdata.qmd
+      - section: Python Tutorials
+        contents:
+          - text: Introduction (python)
+            icon: play-btn
+            href: contents/intro-python.ipynb
       - section: Recipes 
       - section: Background
         contents:
