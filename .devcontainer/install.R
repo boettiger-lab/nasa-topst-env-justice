@@ -5,10 +5,9 @@
 # Does not provide a good way to ensure that sf/terra/gdalcubes are installed from source while other packages can be binary
 
 install.packages(c("rstac", "spData", "earthdatalogin", "quarto", "pak", "decor"))
-pak::pkg_install('github::r-tmap/tmap')
-
-pak::pkg_install('github::cboettig/earthdatalogin')
-pak::pkg_install('github::cboettig/duckdbfs')
+remotes::install_github('r-tmap/tmap')
+remotes::install_github('boettiger-lab/earthdatalogin')
+remotes::install_github('cboettig/duckdbfs')
 
 # vscode and jupyter plugins
 #install.packages(c("IRkernel", "languageserver", "httpgd"))
