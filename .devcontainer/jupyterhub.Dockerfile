@@ -33,6 +33,10 @@ RUN python -m pip install --no-cache-dir -r jupyter-requirements.txt && rm jupyt
 COPY nasa-requirements.txt requirements.txt
 RUN python -m pip install --no-cache-dir -r requirements.txt && rm requirements.txt
 
+# latest GDAL
+RUN pip install --no-cache-dir --find-links https://girder.github.io/large_image_wheels GDAL
+
+
 COPY install.R install.R
 RUN Rscript install.R && rm install.R
 
