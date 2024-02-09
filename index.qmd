@@ -1,5 +1,5 @@
 ---
-title: "NASA TOPS-T: Cloud Native Geospatial in R & Python"
+title: "Cloud Native Geospatial in R & Python"
 format: html
 ---
 
@@ -8,12 +8,16 @@ format: html
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Docker Image :whale2:](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml/badge.svg)](https://github.com/boettiger-lab/nasa-topst-env-justice/actions/workflows/docker-image.yml)
-[![](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
 
+<!--
+[![](https://github.com/codespaces/badge.svg)](https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1)
+-->
 
 ---
 
-This project seeks to introduce cloud-native approaches to geospatial analysis in R & Python through the lens of environmental justice applications.  This is not meant as a complete course in geospatial analysis -- though we encourage interested readers to consider [Geocomputation in R or Python](https://geocompx.org/) as an excellent resource.  We present opinionated recipes meant to empower users with the following design goals:
+
+
+This project seeks to introduce [cloud-native approaches to geospatial analysis](https://cloudnativegeo.org) in R & Python through the lens of environmental justice applications.  This is not meant as a complete course in geospatial analysis -- though we encourage interested readers to consider [Geocomputation in R or Python](https://geocompx.org/) as an excellent resource.  We present opinionated recipes meant to empower users with the following design goals:
 
 - Open science: open source software, open data, open standards, and reproducibility are emphasized.
 - Recipes are presented as reproducible computational notebooks (Quarto and Jupyter) set in narrative analysis.

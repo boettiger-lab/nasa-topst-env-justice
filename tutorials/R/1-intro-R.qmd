@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-description: "Cloud-Native Data in R"
+description: "Cloud-native geospatial data in R"
 ---
 
 

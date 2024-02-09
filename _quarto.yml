@@ -49,8 +49,7 @@ website:
       - section: 'Tutorials in Python'
         icon: mortarboard-fill
         contents:
-          - text: Introduction
-            href: tutorials/python/intro-python.html
+          - auto: "tutorials/python/*"
       - section: Platforms
         icon: pc-display-horizontal
         contents: 
