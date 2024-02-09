@@ -1,62 +1,5 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>Examining Environmental Justice through Open Source, Cloud-Native Tools</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-</style>
-
-
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -65,7 +8,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../contents/earthdata.html" rel="next">
-<link href="../index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,36 +16,155 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
-  "limit": 20,
-  "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
-  }
-}</script>
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Introduction</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/css/nucleo-icons.css">
+  <link rel="stylesheet" href="../assets/css/quarto-material-kit.css">
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "navbar",
+    "copy-button": false,
+    "collapse-after": 3,
+    "panel-placement": "end",
+    "type": "overlay",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit",
+      "search-label": "Search"
+    }
+  }</script>
+  <style>
 
-
+        .quarto-title-block .quarto-title-banner {
+          background-image: url(../assets/img/blue-marble.jpg);
+  background-size: cover;
+        }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 
-<body class="nav-sidebar docked fullcontent">
 
+<body class="nav-sidebar floating nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target=""><i class="bi bi-house" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-platforms" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-pc-display-horizontal" role="img">
+</i> 
+ <span class="menu-text">Platforms</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-platforms">    
+        <li>
+    <a class="dropdown-item" href="https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="dropdown-text">Codespaces</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://openscapes.2i2c.cloud/" rel="" target=""><i class="bi bi-cloud" role="img">
+</i> 
+ <span class="dropdown-text">Openscapes JuypterHub</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice" rel="" target=""><i class="bi bi-app" role="img">
+</i> 
+ <span class="dropdown-text">GitPod</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/orgs/boettiger-lab/packages?repo_name=nasa-topst-env-justice" rel="" target=""><i class="bi bi-box" role="img">
+</i> 
+ <span class="dropdown-text">Containers</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en" rel="" target=""><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Data Catalog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/boettiger-lab/nasa-topst-env-justice" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -112,78 +173,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../contents/intro-R.html">R Tutorials</a></li><li class="breadcrumb-item"><a href="../contents/intro-R.html">Introduction (R)</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<header id="title-block-header" class="bg-gradient-dark">
+<div class="page-header min-vh-45" style="background-image: url(../assets/img/blue-marble.jpg);">
+<span class="mask bg-gradient-dark opacity-3"></span>
+<div class="container">
+<div class="row justify-content-center">
+<div class="col-lg-8 text-center mx-auto my-auto">
+<h1 class="text-white">Introduction</h1>
+<p class="lead mb-4 text-white opacity-8"></p>
+</div>
+</div>
+</div>
+</div></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-house" role="img">
-</i> 
- <span class="menu-text">About</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="https://github.com/boettiger-lab/nasa-topst-env-justice" class="sidebar-item-text sidebar-link"><i class="bi bi-github" role="img">
-</i> 
- <span class="menu-text">GitHub source</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
+ <span class="menu-text">R Tutorials</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en" class="sidebar-item-text sidebar-link"><i class="bi bi-book" role="img">
-</i> 
- <span class="menu-text">Catalog of catalogs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1" class="sidebar-item-text sidebar-link"><i class="bi bi-pc-horizontal" role="img">
-</i> 
- <span class="menu-text">Codespaces</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="https://openscapes.2i2c.cloud/" class="sidebar-item-text sidebar-link"><i class="bi bi-cloud" role="img">
-</i> 
- <span class="menu-text">JuypterHub</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
- <span class="menu-text">R Tutorials</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../contents/intro-R.html" class="sidebar-item-text sidebar-link active"><i class="bi bi-play-btn" role="img">
@@ -202,13 +220,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
  <span class="menu-text">Python Tutorials</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../contents/intro-python.html" class="sidebar-item-text sidebar-link"><i class="bi bi-play-btn" role="img">
@@ -224,13 +242,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
  <span class="menu-text">Background</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../contents/computing-environment.html" class="sidebar-item-text sidebar-link">
@@ -246,25 +264,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Examining Environmental Justice through Open Source, Cloud-Native Tools</h1>
-</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
 
-</header>
+<div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
 
+<section class="position-relative">
+<div class="container">
+<div class="row">
+<div class="col-12 mx-auto">
+<section id="exploring-the-legacy-of-redlining" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-the-legacy-of-redlining">Exploring the Legacy of Redlining</h2>
 <p>This executable notebook provides an opening example to illustrate a cloud-native workflow in both R and python. Pedagogy research emphasizes the importance of “playing the whole game” before breaking down every pitch and hit. We intentionally focus on powerful high-level tools (STAC API, COGs, datacubes) to illustrate how a few chunks of code can perform a task that would be far slower and more verbose in a traditional file-based, download-first workflow. Note the close parallels between R and Python syntax. This arises because both languages wrap the same underlying tools (the STAC API and GDAL warper) and handle many of the nuisances of spatial data – from re-projections and resampling to mosaic tiles – without us noticing.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstac)</span>
@@ -274,6 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>gdalcubes<span class="sc">::</span><span class="fu">gdalcubes_options</span>(<span class="at">parallel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 <section id="data-discovery" class="level2">
 <h2 class="anchored" data-anchor-id="data-discovery">Data discovery</h2>
 <!--
@@ -374,23 +388,23 @@ Large geospatial data comes in many different formats and is frequently divided 
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">A</td>
-<td style="text-align: right;">0.3201176</td>
-<td style="text-align: right;">0.0611433</td>
+<td style="text-align: right;">0.3201204</td>
+<td style="text-align: right;">0.0611414</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">B</td>
-<td style="text-align: right;">0.2138515</td>
-<td style="text-align: right;">0.0783234</td>
+<td style="text-align: right;">0.2138501</td>
+<td style="text-align: right;">0.0783221</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">C</td>
-<td style="text-align: right;">0.1956364</td>
-<td style="text-align: right;">0.0564873</td>
+<td style="text-align: right;">0.1956334</td>
+<td style="text-align: right;">0.0564822</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">0.1949794</td>
-<td style="text-align: right;">0.0385861</td>
+<td style="text-align: right;">0.1949736</td>
+<td style="text-align: right;">0.0385805</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">NA</td>
@@ -405,8 +419,15 @@ Large geospatial data comes in many different formats and is frequently divided 
 
 </section>
 </section>
+</div>
+</div>
+</div>
+</section>
+</div>
 
 </main> <!-- /main -->
+<script src="assets/js/material-kit.js"></script>
+<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -642,9 +663,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">About</span>
-      </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../contents/earthdata.html" class="pagination-link">
@@ -664,7 +682,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">
-    <a class="nav-link active" href="https://github.com/boettiger-lab/nasa-topst-env-justice" aria-current="page">
+    <a class="nav-link" href="https://github.com/boettiger-lab/nasa-topst-env-justice">
       <i class="bi bi-github" role="img">
 </i> 
     </a>
