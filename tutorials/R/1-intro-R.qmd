@@ -1,6 +1,6 @@
 ---
-title: Introduction
-icon: play-btn
+title: "Introduction"
+description: "Cloud-Native Data in R"
 ---
 
 

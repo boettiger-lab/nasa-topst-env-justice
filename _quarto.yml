@@ -42,24 +42,20 @@ website:
   sidebar:
     style: floating
     contents:
-      - section: R Tutorials
+      - section: 'Tutorials in R'
+        icon: mortarboard-fill
         contents:
-          - text: Introduction (R)
-            icon: play-btn
-            href: contents/intro-R.qmd
-          - text: NASA EarthData
-            icon: rocket
-            href: contents/earthdata.qmd
-      - section: Python Tutorials
+          - auto: "tutorials/R/*"
+      - section: 'Tutorials in Python'
+        icon: mortarboard-fill
         contents:
-          - text: Introduction (python)
-            icon: play-btn
-            href: contents/intro-python.ipynb
-      - section: Recipes 
-      - section: Background
-        contents:
-          - text: Portable Environments
-            href: contents/computing-environment.qmd
+          - text: Introduction
+            href: tutorials/python/intro-python.html
+      - section: Platforms
+        icon: pc-display-horizontal
+        contents: 
+          - href: tutorials/computing-environment.qmd
+      - section: Recipes
   page-footer:
     right: 
       - icon: github
