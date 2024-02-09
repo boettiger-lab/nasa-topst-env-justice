@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/python/intro-python.html</loc>
-    <lastmod>2024-02-09T21:59:43.287Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/R/2-earthdata.html</loc>
-    <lastmod>2024-02-09T21:59:42.527Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
-    <lastmod>2024-02-09T21:59:41.223Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/R/1-intro-R.html</loc>
-    <lastmod>2024-02-09T21:59:42.087Z</lastmod>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/python/2-xarray-without-download.html</loc>
+    <lastmod>2024-02-09T23:37:38.349Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/computing-environment.html</loc>
-    <lastmod>2024-02-09T21:59:42.879Z</lastmod>
+    <lastmod>2024-02-09T23:37:37.477Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/R/1-intro-R.html</loc>
+    <lastmod>2024-02-09T23:37:36.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/index.html</loc>
+    <lastmod>2024-02-09T23:35:28.033Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/R/2-earthdata.html</loc>
+    <lastmod>2024-02-09T23:37:37.085Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/boettiger-lab/nasa-topst-env-justice/tutorials/python/1-intro-python.html</loc>
+    <lastmod>2024-02-09T23:37:37.885Z</lastmod>
   </url>
 </urlset>

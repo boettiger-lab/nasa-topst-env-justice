@@ -7,7 +7,7 @@
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../tutorials/computing-environment.html" rel="next">
+<link href="../../tutorials/python/2-xarray-without-download.html" rel="next">
 <link href="../../tutorials/R/2-earthdata.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -20,7 +20,8 @@
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Introduction to cloud-native data: Python</title>
+  <meta name="description" content="Cloud-native geospatial data in Python">
+  <title>Introduction</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -173,7 +174,7 @@
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../tutorials/python/intro-python.html">Tutorials in Python</a></li><li class="breadcrumb-item"><a href="../../tutorials/python/intro-python.html">Introduction</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../tutorials/python/1-intro-python.html">Tutorials in Python</a></li><li class="breadcrumb-item"><a href="../../tutorials/python/1-intro-python.html">Introduction</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
     </div>
@@ -186,8 +187,8 @@
 <div class="container">
 <div class="row justify-content-center">
 <div class="col-lg-8 text-center mx-auto my-auto">
-<h1 class="text-white">Introduction to cloud-native data: Python</h1>
-<p class="lead mb-4 text-white opacity-8"></p>
+<h1 class="text-white">Introduction</h1>
+<p class="lead mb-4 text-white opacity-8">Cloud-native geospatial data in Python</p>
 </div>
 </div>
 </div>
@@ -232,8 +233,14 @@
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../tutorials/python/intro-python.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../tutorials/python/1-intro-python.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../tutorials/python/2-xarray-without-download.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">xarray without downloads</span></a>
   </div>
 </li>
       </ul>
@@ -345,7 +352,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <pre><code>&lt;xarray.plot.facetgrid.FacetGrid at 0x7fa18b685fc0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="intro-python_files/figure-html/cell-6-output-2.png" class="img-fluid"></p>
+<p><img src="1-intro-python_files/figure-html/cell-6-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -376,7 +383,7 @@ Large geospatial data comes in many different formats and is frequently divided 
 <pre><code>&lt;Axes: &gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="intro-python_files/figure-html/cell-8-output-2.png" class="img-fluid"></p>
+<p><img src="1-intro-python_files/figure-html/cell-8-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 <p>Are historically redlined areas still less green?</p>
@@ -689,8 +696,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../tutorials/computing-environment.html" class="pagination-link">
-        <span class="nav-page-text">Computing Environments</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../tutorials/python/2-xarray-without-download.html" class="pagination-link">
+        <span class="nav-page-text">xarray without downloads</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -702,7 +709,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/boettiger-lab/nasa-topst-env-justice/blob/main/tutorials/python/intro-python.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/boettiger-lab/nasa-topst-env-justice/blob/main/tutorials/python/1-intro-python.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">
