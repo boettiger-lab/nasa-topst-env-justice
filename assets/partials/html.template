@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+  <style>
+    $styles.html()$
+  </style>
+$for(css)$
+  <link rel="stylesheet" href="$css$" />
+$endfor$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+$if(mathjax)$
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+$endif$
+  $math$
+$endif$
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="nav-sidebar">
+$for(include-before)$
+$include-before$
+$endfor$
+
+<header id="title-block-header"  class="bg-gradient-dark">
+<div class="page-header min-vh-45" style="background-image: url($title-block-banner$);">
+<span class="mask bg-gradient-dark opacity-3"></span>
+<div class="container">
+<div class="row justify-content-center">
+<div class="col-lg-8 text-center mx-auto my-auto">
+<h1 class="text-white">$title$</h1>
+<p class="lead mb-4 text-white opacity-8">$description$</p>
+</div>
+</div>
+</div>
+</header>
+
+
+$if(toc)$
+<nav id="$idprefix$TOC" role="doc-toc">
+$if(toc-title)$
+<h2 id="$idprefix$toc-title">$toc-title$</h2>
+$endif$
+$table-of-contents$
+</nav>
+$endif$
+
+<div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
+
+<section class="position-relative">
+<div class="container">
+<div class="row">
+<div class="col-12 mx-auto">
+$body$
+</div>
+</div>
+</div>
+</section>
+</div>
+
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+
+</html>

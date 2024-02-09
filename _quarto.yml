@@ -12,27 +12,36 @@ website:
   repo-url: https://github.com/boettiger-lab/nasa-topst-env-justice
   repo-actions: [edit, issue]
   page-navigation: true
-  sidebar:
-    style: "docked"
+  navbar:
+    background: black
     search: true
-    contents:
+    right:
       - file: index.qmd
         icon: house
-        text: About
+        text: Home
+      - text: Platforms
+        icon: pc-display-horizontal
+        menu:
+        - text: Codespaces
+          icon: github
+          href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
+        - text: Openscapes JuypterHub
+          icon: cloud
+          href: https://openscapes.2i2c.cloud/
+        - text: GitPod
+          icon: app
+          href: https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice
+        - text: Containers
+          icon: box
+          href: https://github.com/orgs/boettiger-lab/packages?repo_name=nasa-topst-env-justice
+      - text: Data Catalog
+        icon: book
+        href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
       - icon: github
-        text: GitHub source
-        href: https://github.com/boettiger-lab/nasa-topst-env-justice
-      - section: Resources
-        contents:
-          - text: Catalog of catalogs
-            icon: book
-            href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
-          - text: Codespaces
-            icon: pc-horizontal
-            href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
-          - text: JuypterHub
-            icon: cloud
-            href: https://openscapes.2i2c.cloud/
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice 
+  sidebar:
+    style: floating
+    contents:
       - section: R Tutorials
         contents:
           - text: Introduction (R)
@@ -58,4 +67,19 @@ website:
       - icon: globe-americas 
         href: https://carlboettiger.info  
 
-          
+
+format:
+  html:
+    page-layout: article # change to full for narrower layout, see https://quarto.org/docs/output-formats/page-layout.html
+    css:
+      - assets/css/nucleo-icons.css
+      - assets/css/quarto-material-kit.css
+      - assets/css/custom.css
+    include-after-body: [assets/html/footer.html]
+    title-block-banner: assets/img/blue-marble.jpg
+    title-block-mask: '<span class="mask bg-gradient-light opacity-2"></span>'
+    template: assets/partials/html.template
+    grid:
+      body-width: 1800px
+      margin-width: 300px
+      gutter-width: 1.5rem

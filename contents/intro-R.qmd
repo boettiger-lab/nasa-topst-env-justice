@@ -1,7 +1,10 @@
 ---
-title: 'Examining Environmental Justice through Open Source, Cloud-Native Tools'
-
+title: Introduction
+icon: play-btn
 ---
+
+
+## Exploring the Legacy of Redlining
 
 This executable notebook provides an opening example to illustrate a cloud-native workflow in both R and python. 
 Pedagogy research emphasizes the importance of "playing the whole game" before breaking down every pitch and hit.
