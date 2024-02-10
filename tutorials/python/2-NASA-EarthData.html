@@ -20,7 +20,7 @@
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>xarray without downloads</title>
+  <title>NASA EarthData</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -174,7 +174,7 @@
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../tutorials/python/1-intro-python.html">Tutorials in Python</a></li><li class="breadcrumb-item"><a href="../../tutorials/python/2-xarray-without-download.html">xarray without downloads</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../tutorials/python/1-intro-python.html">Tutorials in Python</a></li><li class="breadcrumb-item"><a href="../../tutorials/python/2-NASA-EarthData.html">NASA EarthData</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
     </div>
@@ -187,7 +187,7 @@
 <div class="container">
 <div class="row justify-content-center">
 <div class="col-lg-8 text-center mx-auto my-auto">
-<h1 class="text-white">xarray without downloads</h1>
+<h1 class="text-white">NASA EarthData</h1>
 <p class="lead mb-4 text-white opacity-8"></p>
 </div>
 </div>
@@ -239,8 +239,8 @@
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../tutorials/python/2-xarray-without-download.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">xarray without downloads</span></a>
+  <a href="../../tutorials/python/2-NASA-EarthData.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">NASA EarthData</span></a>
   </div>
 </li>
       </ul>
@@ -301,18 +301,18 @@
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><strong>USER NOTE</strong>: This example processes daily data files over 2 years – 729 netcdf files in all. To make this example run more quickly for testing purposes, merely shorten the temporal span of data requested here!</p>
 <div class="cell" data-tags="[]" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> earthaccess.search_data(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    short_name<span class="op">=</span><span class="st">"MUR-JPL-L4-GLOB-v4.1"</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    temporal<span class="op">=</span>(<span class="st">"2020-01-01"</span>, <span class="st">"2021-12-31"</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">#temporal=("2019-01-01", "2019-01-31"),</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Granules found: 729</code></pre>
 </div>
 </div>
-<section id="using-fsspec-virtual-filesystem" class="level2">
-<h2 class="anchored" data-anchor-id="using-fsspec-virtual-filesystem">Using fsspec virtual filesystem</h2>
+<section id="using-fsspec-virtual-filesystem-via-earthacess" class="level2">
+<h2 class="anchored" data-anchor-id="using-fsspec-virtual-filesystem-via-earthacess">Using fsspec virtual filesystem via <code>earthacess</code></h2>
 <p>Rather than tediously downloading the entirety of each file and then manually looping over each one to open, read, and concatinate as shown in the <a href="https://medium.com/coiled-hq/processing-terabyte-scale-nasa-cloud-datasets-with-coiled-70ab552f35ec">Coiled Demo</a>, we can simply open the whole set in one go. This lazy read method allows us to then range-request only the subset of data we need from each file, thanks to <code>earthaccess</code> using a cloud-native reads over http via the python <code>fsspec</code> package. We can then issue the usual xarray operations to process and plot the data, treating the remote source as if it were already sitting on our local disk. This approach is quite fast, works from any machine, and does not require spending money on AWS. (note that <code>fsspec</code> package, which is doing the core magic of allowing us to treat the remote filesystem as if it were a local filesystem, is not explicitly visible in this workflow, but earthaccess has taken care of it for us).</p>
 <p>Note this code is also simpler and more concise than the implementation shown in download-based workflow. Setting up the fsspec connections takes about 29 minutes. because the evaluation is lazy, most of the computation only occurs at the last step, when we create the plot, which takes about 46 minutes.</p>
 <div class="cell" data-tags="[]" data-execution_count="3">
@@ -370,7 +370,7 @@ Wall time: 46min 19s</code></pre>
 <pre><code>&lt;matplotlib.collections.QuadMesh at 0x7f4dfd91b370&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2-xarray-without-download_files/figure-html/cell-6-output-4.png" class="img-fluid"></p>
+<p><img src="2-NASA-EarthData_files/figure-html/cell-6-output-4.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -454,7 +454,7 @@ Wall time: 32min 55s</code></pre>
 <pre><code>&lt;matplotlib.collections.QuadMesh at 0x7f4cf8396b30&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2-xarray-without-download_files/figure-html/cell-9-output-3.png" class="img-fluid"></p>
+<p><img src="2-NASA-EarthData_files/figure-html/cell-9-output-3.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -728,7 +728,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/boettiger-lab/nasa-topst-env-justice/blob/main/tutorials/python/2-xarray-without-download.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/boettiger-lab/nasa-topst-env-justice/blob/main/tutorials/python/2-NASA-EarthData.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/boettiger-lab/nasa-topst-env-justice/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">

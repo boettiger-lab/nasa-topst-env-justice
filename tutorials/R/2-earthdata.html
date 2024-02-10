@@ -235,8 +235,8 @@
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../tutorials/python/2-xarray-without-download.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">xarray without downloads</span></a>
+  <a href="../../tutorials/python/2-NASA-EarthData.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">NASA EarthData</span></a>
   </div>
 </li>
       </ul>
@@ -282,13 +282,19 @@
 <div class="container">
 <div class="row">
 <div class="col-12 mx-auto">
-<p>The NASA EarthData program provides access to an extensive collection of spatial data products from each of its 12 Distributed Active Archive Centers (‘DAACs’) on the high-performance S3 storage system of Amazon Web Services (AWS). We can take advantage of range requests with NASA EarthData URLs, but unlike the previous examples, NASA requires an authentication step. NASA offers several different mechanisms, including <code>netrc</code> authentication, token-based authentication, and S3 credentials, but only the first of these works equally well from locations both inside and outside of AWS-based compute, so there really is very little reason to learn the other two.</p>
+<p>This tutorial demonstrates how begin to generalize the pattern introduced in the introductory example to work with other data sources, in particular, with NASA EarthData.</p>
+<p>NASA recently announced completion of the transfer of some <a href="https://www.earthdata.nasa.gov/eosdis/cloud-evolution">59 petabytes of data</a> to the Amazon cloud – a core component of NASA’s Transformation to Open Science (TOPS) mission. Researchers are frequently told that to take advantage of such “cloud data” they will need to pay (or find a grant or other program to pay) for cloud computing resources. This approach is sometimes describes as “send the compute to the data”. While this narrative is no doubt beneficial to Amazon Inc, it exacerbates inequity and is often misleading. The purpose of having data in a cloud storage platform is not just to make it faster to access that data on rented cloud computing platforms. The high bandwith and high disk speeds provided by these systems can be just as powerful when you provide your own compute. Consistent with NASA’s vision, this means that high-performance access is free</p>
+<blockquote class="blockquote">
+<p>NASA Earth science data have been freely openly and available to all users since EOSDIS became operational in 1994. Under NASA’s full and open data policy, all NASA mission data (along with the algorithms, metadata, and documentation associated with these data) must be freely available to the public. This means that anyone, anywhere in the world, can access the more than 59 PB of NASA Earth science data without restriction</p>
+</blockquote>
+<p>All we need is software that can treat the cloud storage as if it were local storage: <em>a virtual filesystem</em>. The ability to do this – the HTTP range request standard – has been around for over two decades and is widely implemented in open source software. Unfortunately, many users and workflows are stuck in an old model that assumes individual files must always be downloaded first.</p>
+<p>To make this work with NASA EarthData however, we have one additional challenge involving the problem of <em>authentication</em>. NASA offers several different mechanisms, including (1) <code>netrc</code> authentication, (2) token-based authentication, and (3) S3 credentials, but only the first of these works equally well from locations both inside and outside of AWS-based compute, so there really is very little reason to learn the other two.</p>
 <p>The <a href="https://boettiger-lab.github.io/earthdatalogin/"><code>earthdatalogin</code> package in R</a> or the <code>earthaccess</code> package in Python handle the authentication. The R package sets up authentication behind the scenes using environmental variables.</p>
-<div class="cell">
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-2_44795769054d73bef405fd262dac49bd">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>earthdatalogin<span class="sc">::</span><span class="fu">edl_netrc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>(A default login is supplied though users are encouraged to <a href="https://urs.earthdata.nasa.gov/home">register</a> for their own individual accounts.) Once this is in place, EarthData’s protected URLs can be used like any other:</p>
-<div class="cell">
+<p>(A default login is supplied though users are encouraged to <a href="https://urs.earthdata.nasa.gov/home">register</a> for their own individual accounts.) Once this is in place, EarthData’s protected URLs can be used like any other. For instance, after authenticating, we can read this NASA harmonized LandSat-Sentinel2 <code>tif</code> whether we are running locally:</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-3_fd847ddb31b3bf7630ca7a7821656a37">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">rast</span>(<span class="st">"https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T56JKT.2023246T235950.v2.0/HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif"</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vsi=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -301,8 +307,91 @@ source      : HLS.L30.T56JKT.2023246T235950.v2.0.SAA.tif
 name        : HLS.L30.T56JKT.2023246T235950.v2.0.SAA </code></pre>
 </div>
 </div>
+<p>An important aspect about this approach is that it does not require any custom wrappers or specialized functions to access data. Most R packages that work with spatial data, including <code>terra</code>, <code>sf</code>, <code>stars</code> and others, do so through the use of GDAL for parsing spatial data formats. This means that they all support the <a href="https://gdal.org/user/virtual_file_systems.html">GDAL Virtual Filesystem</a> for cloud-native reads out of the box. <code>earthdatalogin()</code> takes advantage of this by setting authentication credentials as GDAL environmental variable configuration, allowing these existing to seamlessly read NASA data. No need to learn any additional access functions.</p>
+<section id="working-with-stac-gdalcubes" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-stac-gdalcubes">Working with STAC &amp; gdalcubes</h2>
+<div class="cell" data-hash="2-earthdata_cache/html/setup_3baf4c1b5077bcfc0fab4dd82164e88f">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(earthdatalogin)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstac)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gdalcubes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>earthdatalogin</code> also includes optional configuration settings for GDAL which can improve performance of cloud-based data access. Set the GDAL environmental variables using <code>gdal_cloud_config()</code>. An additional helper function exposes the usual GDAL environmental variable to the <code>gdalcubes</code> R package.</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-4_17b81e9d4ad30b73c77d4ed861c8ed0f">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">edl_netrc</span>()           <span class="co"># Authenticate</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gdal_cloud_config</span>()   <span class="co"># Optimize GDAL for cloud</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with_gdalcubes</span>()      <span class="co"># Export settings to gdalcubes package</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gdalcubes_options</span>(<span class="at">parallel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>NASA provides their own search system. NASA also provides a STAC-based search (see below), which allows us to use the standard syntax we have already seen. However, NASA’s STAC API is significantly slower and more prone to server errors than the STAC APIs provided by Element84, Microsoft Planetary Computer, and others.</p>
+<p>Here, we use NASA’s own search protocol, which is less general, but gives us a chance to illustrate the use of <code>gdalcubes</code> using arbitrary URL lists when no STAC catalog is available. We search a handful of dates for illustrative purposes, but this approach can easily scale to larger lists without needing additional RAM or disk space.</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-5_e81ae49aa355f949da68dc25eb5b178f">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="st">"2020-01-01"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>end   <span class="ot">&lt;-</span> <span class="st">"2020-01-03"</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> <span class="fu">edl_search</span>(<span class="at">short_name =</span> <span class="st">"MUR-JPL-L4-GLOB-v4.1"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">temporal =</span> <span class="fu">c</span>(start, end))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>These netcdf files lack appropriate metadata (projection, extent) that GDAL expects. We can provide this manually using the GDAL VRT mechanism:</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-6_eccb2df8eb45a7dfde434c506295b91e">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>vrt <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">&lt;-</span>  <span class="st">"vrt://NETCDF:/vsicurl/"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  suffix <span class="ot">&lt;-</span> <span class="st">":analysed_sst?a_srs=OGC:CRS84&amp;a_ullr=-180,90,180,-90"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(prefix, url, suffix)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># date associated with each file</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>url_dates <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">gsub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d{8})</span><span class="sc">\\</span><span class="st">d{6}.*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, urls), <span class="at">format=</span><span class="st">"%Y%m%d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Because each file in this list of URLs has the same spatial extent, resolution, and projection, we can now manually construct our space-time data cube from these netcdf slices:</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-7_bd828ad3710695c92bb3dd2d2cb09e61">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data_gd <span class="ot">&lt;-</span> gdalcubes<span class="sc">::</span><span class="fu">stack_cube</span>(<span class="fu">vrt</span>(urls), <span class="at">datetime_values =</span> url_dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We use gdalcubes to crop each file</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-8_dd8e17f912864a356a164b576e4a0513">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>extent <span class="ot">=</span> <span class="fu">list</span>(<span class="at">left=</span><span class="sc">-</span><span class="dv">93</span>, <span class="at">right=</span><span class="sc">-</span><span class="dv">76</span>, <span class="at">bottom=</span><span class="dv">41</span>, <span class="at">top=</span><span class="dv">49</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">t0=</span>start, <span class="at">t1=</span>end)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">bench_time</span>({</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  data_gd <span class="sc">|&gt;</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    gdalcubes<span class="sc">::</span><span class="fu">crop</span>(extent) <span class="sc">|&gt;</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aggregate_time</span>(<span class="at">dt=</span><span class="st">"P3D"</span>, <span class="at">method=</span><span class="st">"mean"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(<span class="at">col =</span> viridisLite<span class="sc">::</span><span class="fu">viridis</span>(<span class="dv">10</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="2-earthdata_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>process    real 
+  2.29s  27.34s </code></pre>
+</div>
+</div>
+</section>
+<section id="search-via-stac" class="level1">
+<h1>Search via STAC</h1>
+<p>The STAC Catalog search system we illustrated in the introductory example is a widely used standard. This means that we can use the same packages and same code we have already learned to access entirely different geospatial data products prepared by an entirely different provider. In this example, we will illustrate searching NASA’s EarthData catalog using the STAC interface. We can also browse the collection of <a href="https://radiantearth.github.io/stac-browser/#/external/cmr.earthdata.nasa.gov/stac/">NASA Earthdata STAC Catalogs</a> in a web browser. (<strong><em>NOTE</em></strong>: Unfortunately, at this time, NASA’s implementation of the STAC standard is incomplete. The web browser only shows the first 10 entries under any heading, despite the NASA STAC API actually having the complete records. Also, NASA’s STAC service is considerably slower than those provided by Element84 or Microsoft Planetary Computer.)</p>
+<div class="cell" data-hash="2-earthdata_cache/html/unnamed-chunk-9_c10ec0cfdcda2a6e6a18ad1f8a87ade7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">stac</span>(<span class="st">"https://cmr.earthdata.nasa.gov/stac/POCLOUD"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stac_search</span>(<span class="at">collections =</span> <span class="st">"MUR-JPL-L4-GLOB-v4.1"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">datetime =</span> <span class="fu">paste</span>(start,end, <span class="at">sep =</span> <span class="st">"/"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">post_request</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">items_fetch</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>items</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>###STACItemCollection
+- matched feature(s): 3
+- features (3 item(s) / 0 not fetched):
+  - 20200101090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1
+  - 20200102090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1
+  - 20200103090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1
+- assets: data, metadata, opendap
+- item's fields: 
+assets, bbox, collection, geometry, id, links, properties, stac_extensions, stac_version, type</code></pre>
+</div>
+</div>
 
 
+</section>
 </div>
 </div>
 </div>
