@@ -11,7 +11,7 @@ vignette: >
 High-resolution satellites generate many snapshot images each with a limited field of view or spatial extent.  In order to see a larger area in space, and/or observe changes across space and time, we need to assemble these many snapshots into a mosaic or "data cube" that we can analyze as a cohesive whole. 
 
 
-[EARTHDATA STAC CATALOGS](https://radiantearth.github.io/stac-browser/#/external/cmr.earthdata.nasa.gov/stac/)
+[NASA Earthdata STAC Catalogs](https://radiantearth.github.io/stac-browser/#/external/cmr.earthdata.nasa.gov/stac/)
 
 
 ```{r, include = FALSE}
@@ -41,19 +41,13 @@ For cloud data from almost any other STAC catalog (NOAA, USGS, Planetary Compute
 library(earthdatalogin)
 ```
 
-When using the `gdalcubes` package, we have support for a somewhat nicer, more localized authentication that uses the configuration options instead.
-We tell `edl_set_token` not to set the environmental variable globally, but to return
-in the header format which we can pass to `gdalcubes_set_gdal_config()`:
-
-```{r}
-filepath <- edl_set_token(set_env_var = FALSE, format="file")
-gdalcubes_set_gdal_config("GDAL_HTTP_HEADER_FILE", filepath)
-```
 
 `earthdatalogin` also includes optional configuration settings for GDAL which can improve performance of cloud-based data access.  Set the GDAL environmental variables using `gdal_cloud_config()`
 
 ```{r}
+edl_netrc()
 gdal_cloud_config()
+with_gdalcubes()
 ```
 
 ## Search via STAC
@@ -61,9 +55,9 @@ gdal_cloud_config()
 We will now use the `rstac` package to search one or more NASA collections for data that falls into our desired bounding box of space and time:
 
 ```{r}
-bbox <- c(xmin=-123, ymin=37.25, xmax=-122.0, ymax=38.25) 
+bbox <- c(xmin=-123, ymin=37.25, xmax=-122, ymax=38.25) 
 start <- "2021-12-01"
-end <- "2022-05-30"
+end <- "2021-12-31"
 
 # Find all assets from the desired catalog:
 items <- stac("https://cmr.earthdata.nasa.gov/stac/LPCLOUD") |> 
@@ -89,7 +83,7 @@ v = cube_view(srs = "EPSG:4326",
                             t1 = as.character(end),
                             left = bbox[1], right = bbox[3],
                             top = bbox[4], bottom = bbox[2]),
-              nx = 512, ny = 512, dt = "P1M")
+              dx = 0.0001, dy = 0.0001, dt = "P1M")
 ```
 
 
