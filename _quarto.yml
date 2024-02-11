@@ -42,19 +42,44 @@ website:
   sidebar:
     style: floating
     contents:
+      - file: index.qmd
+        icon: house
+        text: Home
+      - text: "---"
       - section: 'Tutorials in R'
         icon: mortarboard-fill
         contents:
           - auto: "tutorials/R/*"
+      - text: "---"
       - section: 'Tutorials in Python'
         icon: mortarboard-fill
         contents:
           - auto: "tutorials/python/*"
+      - text: "---"
+      - section: Recipes
+      - text: "---"
       - section: Platforms
         icon: pc-display-horizontal
-        contents: 
-          - href: tutorials/computing-environment.qmd
-      - section: Recipes
+        contents:
+        - href: tutorials/computing-environment.qmd
+        - text: Codespaces
+          icon: github
+          href: https://codespaces.new/espm-157/nasa-topst-env-justice?quickstart=1
+        - text: Openscapes JuypterHub
+          icon: cloud
+          href: https://openscapes.2i2c.cloud/
+        - text: GitPod
+          icon: app
+          href: https://gitpod.io/#https://github.com/boettiger-lab/nasa-topst-env-justice
+        - text: Containers
+          icon: box
+          href: https://github.com/orgs/boettiger-lab/packages?repo_name=nasa-topst-env-justice
+      - text: "---"
+      - text: Data Catalog
+        icon: book
+        href: https://radiantearth.github.io/stac-browser/#/external/raw.githubusercontent.com/schmidtDSE/biodiversity-catalog/main/stac/v1/catalog.json?.language=en
+      - icon: github
+        href: https://github.com/boettiger-lab/nasa-topst-env-justice 
   page-footer:
     right: 
       - icon: github
