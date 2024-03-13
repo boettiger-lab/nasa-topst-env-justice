@@ -36,6 +36,9 @@ distributed
 h5netcdf
 h5py
 netCDF4
+pydeck
+
+
 zarr
 lxml
 geopolars
