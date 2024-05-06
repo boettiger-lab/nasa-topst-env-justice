@@ -1,5 +1,5 @@
 # devcontainer-focused Rocker
-FROM ghcr.io/rocker-org/devcontainer/tidyverse:4.3
+FROM ghcr.io/rocker-org/devcontainer/tidyverse:4.4
 
 ## latest version of geospatial libs
 RUN /rocker_scripts/experimental/install_dev_osgeo.sh
@@ -20,7 +20,7 @@ RUN git config --system pull.rebase false && \
     git config --system credential.helper 'cache --timeout=36000'
 
 # codeserver
-RUN curl -fsSL https://code-server.dev/install.sh | sh && rm -rf .cache
+# RUN curl -fsSL https://code-server.dev/install.sh | sh && rm -rf .cache
 
 USER rstudio
 WORKDIR /home/rstudio
@@ -32,9 +32,10 @@ RUN python -m pip install --no-cache-dir -r jupyter-requirements.txt && rm jupyt
 
 COPY nasa-requirements.txt requirements.txt
 RUN python -m pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+RUN python3 -m ipykernel install --user --name=venv
 
 # latest GDAL
-RUN pip install --no-cache-dir --find-links https://girder.github.io/large_image_wheels GDAL
+# RUN pip install --no-cache-dir --find-links https://girder.github.io/large_image_wheels GDAL
 
 
 COPY install.R install.R
