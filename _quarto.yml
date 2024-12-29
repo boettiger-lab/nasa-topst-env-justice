@@ -4,7 +4,6 @@ project:
   render:
     - "*.qmd"
     - "*.ipynb"
-    - "tutorials/python/*.html"
     - "!drafts/"
 execute:
   freeze: auto
@@ -13,6 +12,7 @@ website:
   repo-url: https://github.com/boettiger-lab/nasa-topst-env-justice
   repo-actions: [edit, issue]
   page-navigation: true
+  resources: static
   navbar:
     background: black
     search: true
