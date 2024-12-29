@@ -4,6 +4,7 @@ project:
   render:
     - "*.qmd"
     - "*.ipynb"
+    - "tutorials/python/*.html"
     - "!drafts/"
 execute:
   freeze: auto
